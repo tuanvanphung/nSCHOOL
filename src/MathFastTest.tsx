@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { renderToString } from 'react-dom/server';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   CheckCircle2, 
@@ -59,73 +58,74 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
     const mins = String(now.getMinutes()).padStart(2, '0');
     const filename = `geminifast7_${yy}${mm}${dd}_${hh}${mins}.html`;
 
-    const reportContent = (
-      <html lang="en">
-        <head>
-          <meta charSet="UTF-8" />
-          <title>Test Report - Grade 7 Math FAST Prep</title>
-          <style dangerouslySetInnerHTML={{__html: `
-            body { font-family: system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.5; max-width: 800px; margin: 0 auto; padding: 2rem; background: #f8fafc; }
-            .header { text-align: center; margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-            .score { font-size: 2.5rem; font-weight: bold; color: #2563eb; }
-            .card { background: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-            .correct-card { border-color: #bbf7d0; }
-            .incorrect-card { border-color: #fecaca; }
-            .status { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 0.5rem; }
-            .status-correct { background: #dcfce7; color: #166534; }
-            .status-incorrect { background: #fee2e2; color: #991b1b; }
-            .status-unanswered { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
-            .explanation { margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-radius: 0.5rem; font-size: 0.875rem; }
-            .step-by-step { margin-top: 1rem; padding: 1rem; background: #eff6ff; border-radius: 0.5rem; font-size: 0.875rem; border: 1px solid #bfdbfe; }
-            .diagram { margin: 1rem 0; padding: 1rem; background: #f8fafc; border-radius: 0.5rem; display: inline-block; }
-          `}} />
-        </head>
-        <body>
-          <div className="header">
-            <h1>Grade 7 Math FAST Prep</h1>
-            <p>Test Report generated on {now.toLocaleString()}</p>
-            <div className="score">{Math.round((finalScore / questions.length) * 100)}%</div>
-            <p>{finalScore} out of {questions.length} correct</p>
+    const scorePercent = Math.round((finalScore / questions.length) * 100);
+    
+    let questionsHtml = '';
+    questions.forEach((q, idx) => {
+      const userAnswerIdx = userAnswers[idx];
+      const isCorrect = userAnswerIdx === q.correctAnswer;
+      const isUnanswered = userAnswerIdx === undefined;
+      const statusClass = isCorrect ? 'correct-card' : 'incorrect-card';
+      const statusLabel = isCorrect ? 'Correct' : (isUnanswered ? 'Unanswered' : 'Incorrect');
+      const statusTagClass = isCorrect ? 'status-correct' : (isUnanswered ? 'status-unanswered' : 'status-incorrect');
+
+      questionsHtml += `
+        <div class="card ${statusClass}">
+          <h3 style="margin-top: 0">
+            ${idx + 1}. ${q.text}
+            <span class="status ${statusTagClass}">${statusLabel}</span>
+          </h3>
+          
+          <div style="margin-bottom: 1rem">
+            <strong>Your Answer:</strong> ${isUnanswered ? 'None' : q.options[userAnswerIdx]}
           </div>
+          
+          ${!isCorrect ? `
+            <div style="margin-bottom: 1rem">
+              <strong>Correct Answer:</strong> ${q.options[q.correctAnswer]}
+            </div>
+          ` : ''}
 
-          {questions.map((q, idx) => {
-            const userAnswerIdx = userAnswers[idx];
-            const isCorrect = userAnswerIdx === q.correctAnswer;
-            const isUnanswered = userAnswerIdx === undefined;
-            
-            return (
-              <div key={q.id} className={`card ${isCorrect ? 'correct-card' : 'incorrect-card'}`}>
-                <h3 style={{marginTop: 0}}>
-                  {idx + 1}. {q.text}
-                  {isCorrect && <span className="status status-correct">Correct</span>}
-                  {!isCorrect && !isUnanswered && <span className="status status-incorrect">Incorrect</span>}
-                  {isUnanswered && <span className="status status-unanswered">Unanswered</span>}
-                </h3>
-                
-                {q.diagram && <div className="diagram">{q.diagram}</div>}
+          <div class="${isCorrect ? 'explanation' : 'step-by-step'}">
+            <strong>${isCorrect ? 'Explanation:' : 'Step-by-Step Solution:'}</strong><br/>
+            ${q.explanation}
+          </div>
+        </div>
+      `;
+    });
 
-                <div style={{marginBottom: '1rem'}}>
-                  <strong>Your Answer:</strong> {isUnanswered ? 'None' : q.options[userAnswerIdx]}
-                </div>
-                
-                {!isCorrect && (
-                  <div style={{marginBottom: '1rem'}}>
-                    <strong>Correct Answer:</strong> {q.options[q.correctAnswer]}
-                  </div>
-                )}
+    const htmlString = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Report - Grade 7 Math FAST Prep</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.5; max-width: 800px; margin: 0 auto; padding: 2rem; background: #f8fafc; }
+    .header { text-align: center; margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .score { font-size: 2.5rem; font-weight: bold; color: #2563eb; }
+    .card { background: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+    .correct-card { border-color: #bbf7d0; }
+    .incorrect-card { border-color: #fecaca; }
+    .status { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 0.5rem; }
+    .status-correct { background: #dcfce7; color: #166534; }
+    .status-incorrect { background: #fee2e2; color: #991b1b; }
+    .status-unanswered { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+    .explanation { margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-radius: 0.5rem; font-size: 0.875rem; }
+    .step-by-step { margin-top: 1rem; padding: 1rem; background: #eff6ff; border-radius: 0.5rem; font-size: 0.875rem; border: 1px solid #bfdbfe; }
+    .diagram { margin: 1rem 0; padding: 1rem; background: #f8fafc; border-radius: 0.5rem; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Grade 7 Math FAST Prep</h1>
+    <p>Test Report generated on ${now.toLocaleString()}</p>
+    <div class="score">${scorePercent}%</div>
+    <p>${finalScore} out of ${questions.length} correct</p>
+  </div>
+  ${questionsHtml}
+</body>
+</html>`;
 
-                <div className={isCorrect ? 'explanation' : 'step-by-step'}>
-                  <strong>{isCorrect ? 'Explanation:' : 'Step-by-Step Solution:'}</strong><br/>
-                  {q.explanation}
-                </div>
-              </div>
-            );
-          })}
-        </body>
-      </html>
-    );
-
-    const htmlString = "<!DOCTYPE html>\n" + renderToString(reportContent);
     const blob = new Blob([htmlString], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
