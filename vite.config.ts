@@ -15,7 +15,7 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
-    base: './',
+    base: '/nSCHOOL/',
     build: {
       outDir: 'dist',
     },
