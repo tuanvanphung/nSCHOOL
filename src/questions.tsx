@@ -475,5 +475,478 @@ export const generateQuestions = (): Question[] => {
     explanation: `${totalPizzas} ÷ (1/${sliceFrac}) = ${totalPizzas} × ${sliceFrac} = ${totalPizzas * sliceFrac}.`
   });
 
+  {
+  // 41. Simple Interest
+  const principal = getRandomInt(5, 20) * 100;
+  const rate = getRandomInt(2, 8);
+  const time = getRandomInt(2, 5);
+  const interest = (principal * rate * time) / 100;
+  qs.push({
+    id: 41,
+    text: `If you invest $${principal} at a simple interest rate of ${rate}% per year, how much interest will you earn after ${time} years?`,
+    options: [`$${interest}`, `$${interest + principal}`, `$${(principal * rate) / 100}`, `$${interest * 2}`],
+    correctAnswer: 0,
+    explanation: `Simple Interest = P × r × t = ${principal} × (${rate}/100) × ${time} = ${interest}.`
+  });
+
+  // 42. Percent Error
+  const actual = getRandomInt(40, 100);
+  const estimate = actual + getRandomInt(2, 10) * (Math.random() > 0.5 ? 1 : -1);
+  const error = Math.abs(actual - estimate);
+  const percentError = ((error / actual) * 100).toFixed(1);
+  qs.push({
+    id: 42,
+    text: `You estimated there were ${estimate} jellybeans in a jar. The actual number was ${actual}. What is the percent error of your estimate? (Round to the nearest tenth if necessary)`,
+    options: [`${percentError}%`, `${((error / estimate) * 100).toFixed(1)}%`, `${error}%`, `${(parseFloat(percentError) * 2).toFixed(1)}%`],
+    correctAnswer: 0,
+    explanation: `Percent Error = (|Actual - Estimate| / Actual) × 100 = (${error} / ${actual}) × 100 ≈ ${percentError}%.`
+  });
+
+  // 43. Unit Rate with Fractions
+  const distFracNum = getRandomInt(1, 3);
+  const distFracDen = getRandomInt(4, 5);
+  const timeFracNum = getRandomInt(1, 2);
+  const timeFracDen = getRandomInt(3, 5);
+  const speed = ((distFracNum / distFracDen) / (timeFracNum / timeFracDen)).toFixed(2);
+  qs.push({
+    id: 43,
+    text: `A snail crawls ${distFracNum}/${distFracDen} of a meter in ${timeFracNum}/${timeFracDen} of an hour. What is the snail's speed in meters per hour? (Decimal approximation)`,
+    options: [`${speed} m/h`, `${((distFracNum/distFracDen)*(timeFracNum/timeFracDen)).toFixed(2)} m/h`, `${((timeFracNum/timeFracDen)/(distFracNum/distFracDen)).toFixed(2)} m/h`, `1.00 m/h`],
+    correctAnswer: 0,
+    explanation: `Speed = Distance ÷ Time = (${distFracNum}/${distFracDen}) ÷ (${timeFracNum}/${timeFracDen}) = (${distFracNum}/${distFracDen}) × (${timeFracDen}/${timeFracNum}) ≈ ${speed}.`
+  });
+
+  // 44. Solving Two-Step Inequalities
+  const ineqCoeff = getRandomInt(2, 5);
+  const ineqConst = getRandomInt(3, 12);
+  const ineqTarget = ineqCoeff * getRandomInt(2, 8) + ineqConst;
+  const ineqAns = (ineqTarget - ineqConst) / ineqCoeff;
+  qs.push({
+    id: 44,
+    text: `Solve the inequality: ${ineqCoeff}x + ${ineqConst} ≥ ${ineqTarget}`,
+    options: [`x ≥ ${ineqAns}`, `x ≤ ${ineqAns}`, `x ≥ ${ineqAns + 2}`, `x > ${ineqAns}`],
+    correctAnswer: 0,
+    explanation: `Subtract ${ineqConst} from both sides: ${ineqCoeff}x ≥ ${ineqTarget - ineqConst}. Divide by ${ineqCoeff}: x ≥ ${ineqAns}.`
+  });
+
+  // 45. Negative Coefficient Inequality
+  const negCoeff = -getRandomInt(2, 5);
+  const negConst = getRandomInt(1, 10);
+  const negTarget = negCoeff * getRandomInt(-5, 5) + negConst;
+  const negAns = (negTarget - negConst) / negCoeff;
+  qs.push({
+    id: 45,
+    text: `Solve the inequality: ${negCoeff}x + ${negConst} < ${negTarget}`,
+    options: [`x > ${negAns}`, `x < ${negAns}`, `x ≥ ${negAns}`, `x ≤ ${negAns}`],
+    correctAnswer: 0,
+    explanation: `Subtract ${negConst}: ${negCoeff}x < ${negTarget - negConst}. Divide by ${negCoeff} and FLIP the inequality sign: x > ${negAns}.`
+  });
+
+  // 46. Factoring Expressions
+  const gcf = getRandomInt(2, 6);
+  const term1 = getRandomInt(2, 5);
+  const term2 = getRandomInt(3, 7);
+  qs.push({
+    id: 46,
+    text: `Factor the expression completely: ${gcf * term1}x + ${gcf * term2}`,
+    options: [`${gcf}(${term1}x + ${term2})`, `${term1}(${gcf}x + ${term2})`, `${gcf * term1}(x + ${term2})`, `${term2}(${term1}x + ${gcf})`],
+    correctAnswer: 0,
+    explanation: `The greatest common factor of ${gcf * term1} and ${gcf * term2} is ${gcf}. Factoring it out gives ${gcf}(${term1}x + ${term2}).`
+  });
+
+  // 47. Expanding Expressions
+  const out = getRandomInt(2, 5);
+  const in1 = getRandomInt(2, 6);
+  const in2 = getRandomInt(1, 8);
+  qs.push({
+    id: 47,
+    text: `Expand the expression: -${out}(${in1}y - ${in2})`,
+    options: [`-${out * in1}y + ${out * in2}`, `-${out * in1}y - ${out * in2}`, `${out * in1}y - ${out * in2}`, `-${out * in1}y + ${in2}`],
+    correctAnswer: 0,
+    explanation: `Distribute -${out}: (-${out})(${in1}y) + (-${out})(-${in2}) = -${out * in1}y + ${out * in2}.`
+  });
+
+  // 48. Distance on a Number Line
+  const ptA = getRandomInt(-15, -5);
+  const ptB = getRandomInt(4, 18);
+  qs.push({
+    id: 48,
+    text: `What is the distance between ${ptA} and ${ptB} on a number line?`,
+    options: [`${Math.abs(ptA - ptB)}`, `${ptA + ptB}`, `${Math.abs(ptA + ptB)}`, `${ptB - Math.abs(ptA)}`],
+    correctAnswer: 0,
+    explanation: `Distance = |a - b| = |${ptA} - ${ptB}| = |-${Math.abs(ptA - ptB)}| = ${Math.abs(ptA - ptB)}.`
+  });
+
+  // 49. Multiplying Rational Numbers
+  const dec1 = (getRandomInt(-9, -2) / 10).toFixed(1);
+  const dec2 = (getRandomInt(2, 9) / 10).toFixed(1);
+  const prod = (parseFloat(dec1) * parseFloat(dec2)).toFixed(2);
+  qs.push({
+    id: 49,
+    text: `Multiply: ${dec1} × ${dec2}`,
+    options: [`${prod}`, `${Math.abs(parseFloat(prod)).toFixed(2)}`, `${(parseFloat(prod) * 10).toFixed(1)}`, `${(parseFloat(prod) - 1).toFixed(2)}`],
+    correctAnswer: 0,
+    explanation: `A negative times a positive is negative. ${dec1} × ${dec2} = ${prod}.`
+  });
+
+  // 50. Dividing Rational Numbers
+  const numDiv = getRandomInt(-20, -10);
+  const denDiv = getRandomInt(-5, -2);
+  const divRes = (numDiv / denDiv).toFixed(2);
+  qs.push({
+    id: 50,
+    text: `Divide: ${numDiv} ÷ ${denDiv}`,
+    options: [`${divRes}`, `-${divRes}`, `${(numDiv / denDiv + 1).toFixed(2)}`, `${(Math.abs(numDiv) * Math.abs(denDiv)).toFixed(2)}`],
+    correctAnswer: 0,
+    explanation: `A negative divided by a negative is positive. ${numDiv} ÷ ${denDiv} = ${divRes}.`
+  });
+
+  // 51. Scale Drawing Area
+  const scaleFactor = getRandomInt(2, 5);
+  const origArea = getRandomInt(10, 30);
+  const newArea = origArea * scaleFactor * scaleFactor;
+  qs.push({
+    id: 51,
+    text: `A rectangle has an area of ${origArea} cm². If the dimensions are scaled by a factor of ${scaleFactor}, what is the area of the new rectangle?`,
+    options: [`${newArea} cm²`, `${origArea * scaleFactor} cm²`, `${origArea * scaleFactor * 2} cm²`, `${origArea + scaleFactor} cm²`],
+    correctAnswer: 0,
+    explanation: `When dimensions are scaled by k, the area is scaled by k². New Area = ${origArea} × ${scaleFactor}² = ${origArea} × ${scaleFactor * scaleFactor} = ${newArea}.`
+  });
+
+  // 52. Triangle Inequality Theorem
+  const side1 = getRandomInt(4, 8);
+  const side2 = getRandomInt(5, 9);
+  const validSide = getRandomInt(Math.abs(side1 - side2) + 1, side1 + side2 - 1);
+  const invalidSide = side1 + side2 + getRandomInt(1, 4);
+  qs.push({
+    id: 52,
+    text: `Which of the following could be the length of the third side of a triangle with sides ${side1} and ${side2}?`,
+    options: [`${validSide}`, `${invalidSide}`, `${side1 + side2}`, `${Math.abs(side1 - side2)}`],
+    correctAnswer: 0,
+    explanation: `The third side must be greater than |${side1} - ${side2}| = ${Math.abs(side1 - side2)} and less than ${side1} + ${side2} = ${side1 + side2}. Only ${validSide} fits.`
+  });
+
+  // 53. Cross Sections of a Rectangular Prism
+  qs.push({
+    id: 53,
+    text: `Which 2D shape is formed by a horizontal cross-section of a vertical rectangular prism?`,
+    options: ["Rectangle", "Circle", "Triangle", "Trapezoid"],
+    correctAnswer: 0,
+    explanation: `A horizontal slice parallel to the base of a rectangular prism will always form a rectangle.`
+  });
+
+  // 54. Volume of a Triangular Prism
+  const baseTri = getRandomInt(4, 10);
+  const heightTri = getRandomInt(3, 8);
+  const lengthPrism = getRandomInt(5, 12);
+  const volTriPrism = (0.5 * baseTri * heightTri) * lengthPrism;
+  qs.push({
+    id: 54,
+    text: `Find the volume of a triangular prism. The triangular base has a base of ${baseTri} cm and a height of ${heightTri} cm. The length of the prism is ${lengthPrism} cm.`,
+    options: [`${volTriPrism} cm³`, `${volTriPrism * 2} cm³`, `${baseTri * heightTri * lengthPrism} cm³`, `${volTriPrism / 2} cm³`],
+    correctAnswer: 0,
+    explanation: `Volume = Area of Base × Length. Area of triangle = ½ × ${baseTri} × ${heightTri} = ${0.5 * baseTri * heightTri}. Volume = ${0.5 * baseTri * heightTri} × ${lengthPrism} = ${volTriPrism}.`
+  });
+
+  // 55. Surface Area of a Cube
+  const edge = getRandomInt(3, 9);
+  const saCube = 6 * edge * edge;
+  qs.push({
+    id: 55,
+    text: `What is the surface area of a cube with an edge length of ${edge} inches?`,
+    options: [`${saCube} in²`, `${edge * edge * edge} in²`, `${4 * edge * edge} in²`, `${12 * edge} in²`],
+    correctAnswer: 0,
+    explanation: `A cube has 6 identical square faces. Surface Area = 6 × s² = 6 × ${edge}² = 6 × ${edge * edge} = ${saCube}.`
+  });
+
+  // 56. Experimental Probability
+  const trials = getRandomInt(40, 60);
+  const successes = getRandomInt(10, 25);
+  const expProb = ((successes / trials) * 100).toFixed(1);
+  qs.push({
+    id: 56,
+    text: `A spinner is spun ${trials} times and lands on red ${successes} times. What is the experimental probability of landing on red as a percentage?`,
+    options: [`${expProb}%`, `${((successes / (trials + successes)) * 100).toFixed(1)}%`, `${(100 - parseFloat(expProb)).toFixed(1)}%`, `${((trials / successes) * 10).toFixed(1)}%`],
+    correctAnswer: 0,
+    explanation: `Experimental Probability = (Number of successes / Total trials) × 100 = (${successes} / ${trials}) × 100 = ${expProb}%.`
+  });
+
+  // 57. Theoretical Probability of Compound Events (Coins)
+  qs.push({
+    id: 57,
+    text: `If you flip a fair coin 3 times, what is the theoretical probability of getting exactly 3 heads?`,
+    options: ["1/8", "1/3", "3/8", "1/4"],
+    correctAnswer: 0,
+    explanation: `The probability of heads on one flip is 1/2. For 3 independent flips: (1/2) × (1/2) × (1/2) = 1/8.`
+  });
+
+  // 58. Independent Events
+  const marblesRed = getRandomInt(3, 6);
+  const marblesBlue = getRandomInt(4, 7);
+  const totalMarbles = marblesRed + marblesBlue;
+  qs.push({
+    id: 58,
+    text: `A bag contains ${marblesRed} red marbles and ${marblesBlue} blue marbles. You draw one, REPLACE IT, and draw another. What is the probability of drawing two red marbles?`,
+    options: [`${marblesRed * marblesRed}/${totalMarbles * totalMarbles}`, `${marblesRed}/${totalMarbles}`, `${marblesRed * (marblesRed - 1)}/${totalMarbles * (totalMarbles - 1)}`, `${marblesRed * 2}/${totalMarbles * 2}`],
+    correctAnswer: 0,
+    explanation: `P(Red) = ${marblesRed}/${totalMarbles}. Since you replace it, the events are independent. P(Red and Red) = (${marblesRed}/${totalMarbles}) × (${marblesRed}/${totalMarbles}) = ${marblesRed * marblesRed}/${totalMarbles * totalMarbles}.`
+  });
+
+  // 59. Dependent Events
+  qs.push({
+    id: 59,
+    text: `A bag contains ${marblesRed} red marbles and ${marblesBlue} blue marbles. You draw one, DO NOT replace it, and draw another. What is the probability of drawing two red marbles?`,
+    options: [`${marblesRed * (marblesRed - 1)}/${totalMarbles * (totalMarbles - 1)}`, `${marblesRed * marblesRed}/${totalMarbles * totalMarbles}`, `${marblesRed}/${totalMarbles}`, `${(marblesRed - 1)}/${(totalMarbles - 1)}`],
+    correctAnswer: 0,
+    explanation: `P(1st Red) = ${marblesRed}/${totalMarbles}. P(2nd Red | 1st was Red) = ${marblesRed - 1}/${totalMarbles - 1}. Multiply them: ${marblesRed * (marblesRed - 1)}/${totalMarbles * (totalMarbles - 1)}.`
+  });
+
+  // 60. Mean Absolute Deviation (MAD)
+  qs.push({
+    id: 60,
+    text: `A data set has values: 2, 4, 6, 8. What is the Mean Absolute Deviation (MAD)?`,
+    options: ["2", "5", "0", "4"],
+    correctAnswer: 0,
+    explanation: `Mean = (2+4+6+8)/4 = 5. Absolute deviations from 5: |2-5|=3, |4-5|=1, |6-5|=1, |8-5|=3. MAD = (3+1+1+3)/4 = 8/4 = 2.`
+  });
+
+  // 61. Comparing Populations (Means)
+  qs.push({
+    id: 61,
+    text: `Class A has a mean test score of 85 with a MAD of 2. Class B has a mean of 85 with a MAD of 10. What can you conclude?`,
+    options: ["Class A's scores are more consistent (less spread out).", "Class B's scores are more consistent.", "Both classes have the exact same scores.", "Class B performed better overall."],
+    correctAnswer: 0,
+    explanation: `A lower Mean Absolute Deviation (MAD) means the data points are closer to the mean, indicating more consistency.`
+  });
+
+  // 62. Tax and Tip
+  const mealCost = getRandomInt(20, 60);
+  const taxRate = getRandomInt(5, 9);
+  const tipRate = getRandomInt(15, 20);
+  const taxAmt = mealCost * (taxRate / 100);
+  const tipAmt = mealCost * (tipRate / 100);
+  const totalMeal = (mealCost + taxAmt + tipAmt).toFixed(2);
+  qs.push({
+    id: 62,
+    text: `Your meal costs $${mealCost}. You pay ${taxRate}% tax and leave a ${tipRate}% tip (both calculated on the original meal cost). What is the total amount paid?`,
+    options: [`$${totalMeal}`, `$${(mealCost + taxAmt).toFixed(2)}`, `$${(mealCost + tipAmt).toFixed(2)}`, `$${(mealCost * 1.5).toFixed(2)}`],
+    correctAnswer: 0,
+    explanation: `Tax = ${taxRate}% of ${mealCost} = $${taxAmt.toFixed(2)}. Tip = ${tipRate}% of ${mealCost} = $${tipAmt.toFixed(2)}. Total = ${mealCost} + ${taxAmt.toFixed(2)} + ${tipAmt.toFixed(2)} = $${totalMeal}.`
+  });
+
+  // 63. Commission
+  const sales = getRandomInt(10, 50) * 100;
+  const commRate = getRandomInt(3, 8);
+  const commission = (sales * commRate) / 100;
+  qs.push({
+    id: 63,
+    text: `A salesperson earns a ${commRate}% commission on all sales. If they sell $${sales} worth of goods, how much commission do they earn?`,
+    options: [`$${commission}`, `$${commission + 100}`, `$${sales - commission}`, `$${commission * 2}`],
+    correctAnswer: 0,
+    explanation: `Commission = ${commRate}% of ${sales} = (${commRate}/100) × ${sales} = $${commission}.`
+  });
+
+  // 64. Percent Increase
+  const oldVal = getRandomInt(40, 80);
+  const newVal = oldVal + getRandomInt(10, 30);
+  const pctInc = (((newVal - oldVal) / oldVal) * 100).toFixed(1);
+  qs.push({
+    id: 64,
+    text: `A store bought a jacket for $${oldVal} and marked it up to $${newVal}. What was the percent increase (markup)?`,
+    options: [`${pctInc}%`, `${(((newVal - oldVal) / newVal) * 100).toFixed(1)}%`, `${(newVal - oldVal)}%`, `${(parseFloat(pctInc) * 2).toFixed(1)}%`],
+    correctAnswer: 0,
+    explanation: `Percent Increase = (Amount of Increase / Original) × 100 = (${newVal - oldVal} / ${oldVal}) × 100 ≈ ${pctInc}%.`
+  });
+
+  // 65. Percent Decrease
+  const startPop = getRandomInt(500, 1000);
+  const endPop = startPop - getRandomInt(50, 200);
+  const pctDec = (((startPop - endPop) / startPop) * 100).toFixed(1);
+  qs.push({
+    id: 65,
+    text: `A town's population decreased from ${startPop} to ${endPop}. What was the percent decrease?`,
+    options: [`${pctDec}%`, `${(((startPop - endPop) / endPop) * 100).toFixed(1)}%`, `${startPop - endPop}%`, `${(parseFloat(pctDec) / 2).toFixed(1)}%`],
+    correctAnswer: 0,
+    explanation: `Percent Decrease = (Amount of Decrease / Original) × 100 = (${startPop - endPop} / ${startPop}) × 100 ≈ ${pctDec}%.`
+  });
+
+  // 66. Complex Fractions
+  const cfNum = getRandomInt(1, 3);
+  const cfDen = getRandomInt(4, 5);
+  const cfWhole = getRandomInt(2, 5);
+  const cfRes = ((cfNum / cfDen) / cfWhole).toFixed(3);
+  qs.push({
+    id: 66,
+    text: `Simplify the complex fraction: (${cfNum}/${cfDen}) / ${cfWhole}`,
+    options: [`${cfNum}/${cfDen * cfWhole}`, `${cfNum * cfWhole}/${cfDen}`, `${cfDen}/${cfNum * cfWhole}`, `${cfWhole}/${cfDen}`],
+    correctAnswer: 0,
+    explanation: `(${cfNum}/${cfDen}) ÷ ${cfWhole} = (${cfNum}/${cfDen}) × (1/${cfWhole}) = ${cfNum}/(${cfDen} × ${cfWhole}) = ${cfNum}/${cfDen * cfWhole}.`
+  });
+
+  // 67. Adding Linear Expressions
+  const le1a = getRandomInt(2, 5);
+  const le1b = getRandomInt(1, 6);
+  const le2a = getRandomInt(3, 7);
+  const le2b = getRandomInt(2, 8);
+  qs.push({
+    id: 67,
+    text: `Add the expressions: (${le1a}x + ${le1b}) + (${le2a}x - ${le2b})`,
+    options: [`${le1a + le2a}x ${le1b - le2b < 0 ? '-' : '+'} ${Math.abs(le1b - le2b)}`, `${le1a + le2a}x + ${le1b + le2b}`, `${le1a - le2a}x ${le1b - le2b < 0 ? '-' : '+'} ${Math.abs(le1b - le2b)}`, `${le1a * le2a}x - ${le1b * le2b}`],
+    correctAnswer: 0,
+    explanation: `Combine like terms: (${le1a}x + ${le2a}x) + (${le1b} - ${le2b}) = ${le1a + le2a}x ${le1b - le2b < 0 ? '-' : '+'} ${Math.abs(le1b - le2b)}.`
+  });
+
+  // 68. Subtracting Linear Expressions
+  qs.push({
+    id: 68,
+    text: `Subtract the expressions: (${le2a}x + ${le2b}) - (${le1a}x - ${le1b})`,
+    options: [`${le2a - le1a}x + ${le2b + le1b}`, `${le2a - le1a}x + ${le2b - le1b}`, `${le2a + le1a}x + ${le2b + le1b}`, `${le2a - le1a}x - ${le2b + le1b}`],
+    correctAnswer: 0,
+    explanation: `Distribute the negative: ${le2a}x + ${le2b} - ${le1a}x + ${le1b}. Combine like terms: (${le2a}x - ${le1a}x) + (${le2b} + ${le1b}) = ${le2a - le1a}x + ${le2b + le1b}.`
+  });
+
+  // 69. Angle Relationships (Complementary)
+  const compAngle = getRandomInt(20, 70);
+  qs.push({
+    id: 69,
+    text: `Two angles are complementary. If one angle measures ${compAngle}°, what is the measure of the other angle?`,
+    options: [`${90 - compAngle}°`, `${180 - compAngle}°`, `${compAngle}°`, `${90 + compAngle}°`],
+    correctAnswer: 0,
+    explanation: `Complementary angles add up to 90°. 90° - ${compAngle}° = ${90 - compAngle}°.`
+  });
+
+  // 70. Angle Relationships (Supplementary)
+  const suppAngle = getRandomInt(40, 140);
+  qs.push({
+    id: 70,
+    text: `Two angles are supplementary. If one angle measures ${suppAngle}°, what is the measure of the other angle?`,
+    options: [`${180 - suppAngle}°`, `${90 - suppAngle > 0 ? 90 - suppAngle : 360 - suppAngle}°`, `${suppAngle}°`, `${180 + suppAngle}°`],
+    correctAnswer: 0,
+    explanation: `Supplementary angles add up to 180°. 180° - ${suppAngle}° = ${180 - suppAngle}°.`
+  });
+
+  // 71. Vertical Angles
+  const vertAngle = getRandomInt(30, 150);
+  qs.push({
+    id: 71,
+    text: `Angles A and B are vertical angles. If Angle A measures ${vertAngle}°, what is the measure of Angle B?`,
+    options: [`${vertAngle}°`, `${180 - vertAngle}°`, `${90 - vertAngle > 0 ? 90 - vertAngle : 360 - vertAngle}°`, `${vertAngle / 2}°`],
+    correctAnswer: 0,
+    explanation: `Vertical angles are always equal. Therefore, Angle B is also ${vertAngle}°.`
+  });
+
+  // 72. Circumference of a Circle
+  const circRadius = getRandomInt(4, 12);
+  const circumference = (2 * 3.14 * circRadius).toFixed(2);
+  qs.push({
+    id: 72,
+    text: `What is the approximate circumference of a circle with a radius of ${circRadius} cm? (Use π ≈ 3.14)`,
+    options: [`${circumference} cm`, `${(3.14 * circRadius * circRadius).toFixed(2)} cm`, `${(3.14 * circRadius).toFixed(2)} cm`, `${(parseFloat(circumference) * 2).toFixed(2)} cm`],
+    correctAnswer: 0,
+    explanation: `Circumference = 2πr = 2 × 3.14 × ${circRadius} = ${circumference}.`
+  });
+
+  // 73. Area of a Semicircle
+  const semiRadius = getRandomInt(4, 10);
+  const semiArea = (0.5 * 3.14 * semiRadius * semiRadius).toFixed(2);
+  qs.push({
+    id: 73,
+    text: `What is the approximate area of a semicircle with a radius of ${semiRadius} m? (Use π ≈ 3.14)`,
+    options: [`${semiArea} m²`, `${(3.14 * semiRadius * semiRadius).toFixed(2)} m²`, `${(3.14 * semiRadius).toFixed(2)} m²`, `${(0.5 * 3.14 * semiRadius).toFixed(2)} m²`],
+    correctAnswer: 0,
+    explanation: `Area of a full circle = πr². Area of a semicircle = ½πr² = 0.5 × 3.14 × ${semiRadius}² = ${semiArea}.`
+  });
+
+  // 74. Volume of a Rectangular Prism
+  const lPrism = getRandomInt(3, 8);
+  const wPrism = getRandomInt(2, 6);
+  const hPrism = getRandomInt(4, 10);
+  qs.push({
+    id: 74,
+    text: `Find the volume of a rectangular prism with length ${lPrism} cm, width ${wPrism} cm, and height ${hPrism} cm.`,
+    options: [`${lPrism * wPrism * hPrism} cm³`, `${2 * (lPrism*wPrism + wPrism*hPrism + lPrism*hPrism)} cm³`, `${lPrism + wPrism + hPrism} cm³`, `${(lPrism * wPrism * hPrism) / 2} cm³`],
+    correctAnswer: 0,
+    explanation: `Volume = length × width × height = ${lPrism} × ${wPrism} × ${hPrism} = ${lPrism * wPrism * hPrism}.`
+  });
+
+  // 75. Surface Area of a Rectangular Prism
+  const saRectPrism = 2 * (lPrism * wPrism + wPrism * hPrism + lPrism * hPrism);
+  qs.push({
+    id: 75,
+    text: `Find the surface area of a rectangular prism with length ${lPrism} cm, width ${wPrism} cm, and height ${hPrism} cm.`,
+    options: [`${saRectPrism} cm²`, `${lPrism * wPrism * hPrism} cm²`, `${saRectPrism / 2} cm²`, `${lPrism + wPrism + hPrism} cm²`],
+    correctAnswer: 0,
+    explanation: `Surface Area = 2(lw + wh + lh) = 2(${lPrism}×${wPrism} + ${wPrism}×${hPrism} + ${lPrism}×${hPrism}) = 2(${lPrism * wPrism} + ${wPrism * hPrism} + ${lPrism * hPrism}) = ${saRectPrism}.`
+  });
+
+  // 76. Probability of Not an Event
+  const probA = getRandomInt(1, 4);
+  const probB = getRandomInt(5, 9);
+  qs.push({
+    id: 76,
+    text: `If the probability of an event happening is ${probA}/${probB}, what is the probability of the event NOT happening?`,
+    options: [`${probB - probA}/${probB}`, `${probA}/${probB}`, `${probB}/${probA}`, `1/${probB}`],
+    correctAnswer: 0,
+    explanation: `P(Not Event) = 1 - P(Event) = ${probB}/${probB} - ${probA}/${probB} = ${probB - probA}/${probB}.`
+  });
+
+  // 77. Tree Diagram / Sample Space
+  const shirts = getRandomInt(3, 5);
+  const pants = getRandomInt(2, 4);
+  const shoes = getRandomInt(2, 3);
+  qs.push({
+    id: 77,
+    text: `You are choosing an outfit. You have ${shirts} shirts, ${pants} pairs of pants, and ${shoes} pairs of shoes. How many different outfit combinations are possible?`,
+    options: [`${shirts * pants * shoes}`, `${shirts + pants + shoes}`, `${shirts * pants}`, `${(shirts * pants * shoes) / 2}`],
+    correctAnswer: 0,
+    explanation: `Use the Fundamental Counting Principle: multiply the number of options for each category. ${shirts} × ${pants} × ${shoes} = ${shirts * pants * shoes}.`
+  });
+
+  // 78. Multi-Step Word Problem (Money)
+  const allowance = getRandomInt(20, 50);
+  const spentFrac = getRandomInt(2, 4);
+  const earnedExtra = getRandomInt(5, 15);
+  const finalMoney = (allowance - (allowance / spentFrac) + earnedExtra).toFixed(2);
+  qs.push({
+    id: 78,
+    text: `You receive $${allowance} for allowance. You spend 1/${spentFrac} of it on a movie, then earn $${earnedExtra} washing the car. How much money do you have now?`,
+    options: [`$${finalMoney}`, `$${(allowance / spentFrac + earnedExtra).toFixed(2)}`, `$${(allowance - earnedExtra).toFixed(2)}`, `$${(allowance + earnedExtra).toFixed(2)}`],
+    correctAnswer: 0,
+    explanation: `Spent = $${allowance} × (1/${spentFrac}) = $${allowance / spentFrac}. Remaining = ${allowance} - ${allowance / spentFrac} = $${allowance - (allowance / spentFrac)}. Add earnings: ${allowance - (allowance / spentFrac)} + ${earnedExtra} = $${finalMoney}.`
+  });
+
+  // 79. Similar Figures
+  const simSide1 = getRandomInt(3, 6);
+  const simSide2 = getRandomInt(7, 12);
+  const simScale = getRandomInt(2, 4);
+  qs.push({
+    id: 79,
+    text: `Two triangles are similar. A side on the smaller triangle is ${simSide1} cm, and the corresponding side on the larger triangle is ${simSide1 * simScale} cm. If another side on the smaller triangle is ${simSide2} cm, what is the corresponding side on the larger triangle?`,
+    options: [`${simSide2 * simScale} cm`, `${simSide2 + simScale} cm`, `${(simSide2 / simScale).toFixed(1)} cm`, `${simSide2 * 2} cm`],
+    correctAnswer: 0,
+    explanation: `The scale factor is ${simSide1 * simScale} / ${simSide1} = ${simScale}. Multiply the other side by the scale factor: ${simSide2} × ${simScale} = ${simSide2 * simScale}.`
+  });
+
+  // 80. Constant Speed Word Problem
+  const speedDist = getRandomInt(120, 300);
+  const speedTime = getRandomInt(2, 5);
+  const newTime = getRandomInt(6, 9);
+  const speedRate = speedDist / speedTime;
+  qs.push({
+    id: 80,
+    text: `A car travels ${speedDist} miles in ${speedTime} hours at a constant speed. How far will it travel in ${newTime} hours at the same speed?`,
+    options: [`${speedRate * newTime} miles`, `${speedDist + newTime * 10} miles`, `${speedRate * 2} miles`, `${(speedDist / newTime).toFixed(1)} miles`],
+    correctAnswer: 0,
+    explanation: `Find the unit rate (speed): ${speedDist} ÷ ${speedTime} = ${speedRate} mph. Multiply by new time: ${speedRate} × ${newTime} = ${speedRate * newTime} miles.`
+  });
+  }
+
+  // Shuffle the array
+  for (let i = qs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [qs[i], qs[j]] = [qs[j], qs[i]];
+  }
+
+  // Return all 80 questions
   return qs;
 };

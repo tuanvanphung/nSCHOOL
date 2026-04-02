@@ -62,33 +62,56 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
     
     let questionsHtml = '';
     questions.forEach((q, idx) => {
-      const userAnswerIdx = userAnswers[idx];
-      const isCorrect = userAnswerIdx === q.correctAnswer;
-      const isUnanswered = userAnswerIdx === undefined;
-      const statusClass = isCorrect ? 'correct-card' : 'incorrect-card';
-      const statusLabel = isCorrect ? 'Correct' : (isUnanswered ? 'Unanswered' : 'Incorrect');
-      const statusTagClass = isCorrect ? 'status-correct' : (isUnanswered ? 'status-unanswered' : 'status-incorrect');
+      const userAnswer = userAnswers[idx];
+      const isCorrect = userAnswer === q.correctAnswer;
+      const isUnanswered = userAnswer === undefined;
+      
+      const explanationSteps = q.explanation.split(/\.\s+|\.$/).filter(step => step.trim().length > 0).map(step => step.trim() + '.');
+      const explanationHtml = explanationSteps.map(step => `<div style="margin-bottom: 4px;">• ${step}</div>`).join('');
+
+      let optionsHtml = '';
+      q.options.forEach((opt, oIdx) => {
+        let optClass = 'p-2 text-xs rounded-lg border border-slate-100 text-slate-400';
+        if (oIdx === q.correctAnswer) {
+          optClass = 'p-2 text-xs rounded-lg border bg-green-50 border-green-200 text-green-700 font-bold';
+        } else if (oIdx === userAnswer && !isCorrect) {
+          optClass = 'p-2 text-xs rounded-lg border bg-red-50 border-red-200 text-red-700';
+        }
+        optionsHtml += `<div class="${optClass}">${String.fromCharCode(65 + oIdx)}. ${opt}</div>`;
+      });
 
       questionsHtml += `
-        <div class="card ${statusClass}">
-          <h3 style="margin-top: 0">
-            ${idx + 1}. ${q.text}
-            <span class="status ${statusTagClass}">${statusLabel}</span>
-          </h3>
-          
-          <div style="margin-bottom: 1rem">
-            <strong>Your Answer:</strong> ${isUnanswered ? 'None' : q.options[userAnswerIdx]}
-          </div>
-          
-          ${!isCorrect ? `
-            <div style="margin-bottom: 1rem">
-              <strong>Correct Answer:</strong> ${q.options[q.correctAnswer]}
+        <div class="p-5 rounded-2xl border bg-white shadow-sm mb-4 ${isCorrect ? 'border-green-100' : 'border-red-100'}">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 mt-1">
+              ${isCorrect ? '<span class="text-green-500 text-xl font-bold">✓</span>' : '<span class="text-red-500 text-xl font-bold">✗</span>'}
             </div>
-          ` : ''}
+            <div class="flex-1">
+              <p class="font-semibold text-slate-800 mb-3">
+                ${idx + 1}. ${q.text}
+                ${isUnanswered ? '<span class="ml-2 text-[10px] uppercase tracking-wider font-bold text-red-500 bg-red-50 px-2 py-1 rounded-md border border-red-100">Unanswered</span>' : ''}
+              </p>
+              
+              <div class="grid grid-cols-2 gap-2 mb-4">
+                ${optionsHtml}
+              </div>
 
-          <div class="${isCorrect ? 'explanation' : 'step-by-step'}">
-            <strong>${isCorrect ? 'Explanation:' : 'Step-by-Step Solution:'}</strong><br/>
-            ${q.explanation}
+              ${!isCorrect ? `
+                <div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="font-bold text-blue-900 text-sm">Step-by-Step Solution</span>
+                  </div>
+                  <div class="text-sm text-slate-700 leading-relaxed">
+                    ${explanationHtml}
+                  </div>
+                </div>
+              ` : `
+                <div class="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
+                  <span class="font-bold text-slate-800 block mb-1">Explanation:</span>
+                  ${explanationHtml}
+                </div>
+              `}
+            </div>
           </div>
         </div>
       `;
@@ -99,30 +122,25 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
 <head>
   <meta charset="UTF-8">
   <title>Test Report - Grade 7 Math FAST Prep</title>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.5; max-width: 800px; margin: 0 auto; padding: 2rem; background: #f8fafc; }
-    .header { text-align: center; margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .score { font-size: 2.5rem; font-weight: bold; color: #2563eb; }
-    .card { background: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-    .correct-card { border-color: #bbf7d0; }
-    .incorrect-card { border-color: #fecaca; }
-    .status { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 0.5rem; }
-    .status-correct { background: #dcfce7; color: #166534; }
-    .status-incorrect { background: #fee2e2; color: #991b1b; }
-    .status-unanswered { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
-    .explanation { margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-radius: 0.5rem; font-size: 0.875rem; }
-    .step-by-step { margin-top: 1rem; padding: 1rem; background: #eff6ff; border-radius: 0.5rem; font-size: 0.875rem; border: 1px solid #bfdbfe; }
-    .diagram { margin: 1rem 0; padding: 1rem; background: #f8fafc; border-radius: 0.5rem; display: inline-block; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="header">
-    <h1>Grade 7 Math FAST Prep</h1>
-    <p>Test Report generated on ${now.toLocaleString()}</p>
-    <div class="score">${scorePercent}%</div>
-    <p>${finalScore} out of ${questions.length} correct</p>
+<body class="bg-slate-50 p-8 font-sans">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center mb-8">
+      <h1 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Grade 7 Math FAST Prep</h1>
+      <p class="text-slate-500 font-medium mb-6">Test Report generated on ${now.toLocaleString()}</p>
+      
+      <div class="inline-flex items-center justify-center w-32 h-32 rounded-full border-8 ${scorePercent >= 70 ? 'border-green-500 text-green-500' : 'border-blue-500 text-blue-500'} mb-4">
+        <span class="text-4xl font-black">${scorePercent}%</span>
+      </div>
+      <p class="text-slate-600 font-medium">${finalScore} out of ${questions.length} correct</p>
+    </div>
+    
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold px-2 text-slate-800">Detailed Review</h3>
+      ${questionsHtml}
+    </div>
   </div>
-  ${questionsHtml}
 </body>
 </html>`;
 
@@ -358,6 +376,8 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                   const userAnswer = userAnswers[idx];
                   const isCorrect = userAnswer === q.correctAnswer;
                   const isUnanswered = userAnswer === undefined;
+                  
+                  const explanationSteps = q.explanation.split(/\.\s+|\.$/).filter(step => step.trim().length > 0).map(step => step.trim() + '.');
 
                   return (
                     <div 
@@ -404,13 +424,17 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                                 <span className="font-bold text-blue-900 text-sm">Step-by-Step Solution</span>
                               </div>
                               <div className="text-sm text-slate-700 leading-relaxed">
-                                {q.explanation}
+                                {explanationSteps.map((step, i) => (
+                                  <div key={i} className="mb-1">• {step}</div>
+                                ))}
                               </div>
                             </div>
                           ) : (
                             <div className="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-100">
                               <span className="font-bold text-slate-800 block mb-1">Explanation:</span>
-                              {q.explanation}
+                              {explanationSteps.map((step, i) => (
+                                <div key={i} className="mb-1">• {step}</div>
+                              ))}
                             </div>
                           )}
                         </div>
