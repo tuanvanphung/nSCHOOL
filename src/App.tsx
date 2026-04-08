@@ -27,7 +27,7 @@ export default function App() {
               <Calculator className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
             </div>
             <h2 className="text-xl font-bold mb-2">Grade 7 Math FAST Prep</h2>
-            <p className="text-slate-500 mb-6 flex-1">Dynamic practice test with randomized values. Generates unique 40-question tests covering all Grade 7 standards.</p>
+            <p className="text-slate-500 mb-6 flex-1">Dynamic practice test with randomized values. Generates unique 80-question tests covering all Grade 7 standards.</p>
             <div className="flex items-center text-blue-600 font-semibold text-sm">
               Launch Project <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
             </div>

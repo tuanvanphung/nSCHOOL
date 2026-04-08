@@ -722,28 +722,72 @@ export const generateQuestions = (): Question[] => {
     explanation: `Distance = |a - b| = |${ptA} - ${ptB}| = |-${Math.abs(ptA - ptB)}| = ${Math.abs(ptA - ptB)}.`
   });
 
-  // 49. Multiplying Rational Numbers
-  const dec1 = (getRandomInt(-49, -2) / 10).toFixed(1);
-  const dec2 = (getRandomInt(2, 49) / 10).toFixed(1);
-  const prod = (parseFloat(dec1) * parseFloat(dec2)).toFixed(2);
+  // 49. Multiplying Rational Numbers (Word Problem)
+  const rateDrop = (getRandomInt(2, 49) / 10).toFixed(1);
+  const timeMins = (getRandomInt(2, 49) / 10).toFixed(1);
+  const totalChange = (-(parseFloat(rateDrop) * parseFloat(timeMins))).toFixed(2);
   qs.push({
     id: 49,
-    text: `Multiply: ${dec1} × ${dec2}`,
-    options: [`${prod}`, `${Math.abs(parseFloat(prod)).toFixed(2)}`, `${(parseFloat(prod) * 10).toFixed(1)}`, `${(parseFloat(prod) - 1).toFixed(2)}`],
+    text: `A substance's temperature decreases by ${rateDrop}°C every minute. What is the total change in temperature after ${timeMins} minutes?`,
+    diagram: (
+      <svg width="100%" height="100" viewBox="0 0 200 60" className="mx-auto max-w-sm">
+        <rect x="20" y="10" width="160" height="40" fill="#f8fafc" stroke="#cbd5e1" rx="4" />
+        <path d="M 40 30 L 160 30" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 4" />
+        
+        {/* Thermometer icon simplified */}
+        <rect x="30" y="15" width="10" height="30" rx="5" fill="#e2e8f0" stroke="#94a3b8" />
+        <circle cx="35" cy="40" r="8" fill="#ef4444" />
+        <rect x="33" y="20" width="4" height="20" fill="#ef4444" />
+        
+        <text x="100" y="25" fontSize="10" textAnchor="middle" fill="#ef4444" fontWeight="bold">-{rateDrop}°C / min</text>
+        <text x="100" y="45" fontSize="10" textAnchor="middle" fill="#64748b">Time: {timeMins} min</text>
+        
+        <path d="M 150 20 L 170 40" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)" />
+        <defs>
+          <marker id="arrow-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+          </marker>
+        </defs>
+      </svg>
+    ),
+    options: [`${totalChange}°C`, `${Math.abs(parseFloat(totalChange)).toFixed(2)}°C`, `${(parseFloat(totalChange) * 10).toFixed(1)}°C`, `${(parseFloat(totalChange) - 1).toFixed(2)}°C`],
     correctAnswer: 0,
-    explanation: `A negative times a positive is negative. ${dec1} × ${dec2} = ${prod}.`
+    explanation: `The temperature is decreasing, so the rate is -${rateDrop}°C/min. Total change = Rate × Time = -${rateDrop} × ${timeMins} = ${totalChange}°C.`
   });
 
-  // 50. Dividing Rational Numbers
-  const numDiv = getRandomInt(-100, -10);
-  const denDiv = getRandomInt(-20, -2);
-  const divRes = (numDiv / denDiv).toFixed(2);
+  // 50. Dividing Rational Numbers (Word Problem)
+  const totalDebt = getRandomInt(50, 200);
+  const numPeople = getRandomInt(4, 10);
+  const share = (totalDebt / numPeople).toFixed(2);
   qs.push({
     id: 50,
-    text: `Divide: ${numDiv} ÷ ${denDiv}`,
-    options: [`${divRes}`, `-${divRes}`, `${(numDiv / denDiv + 1).toFixed(2)}`, `${(Math.abs(numDiv) * Math.abs(denDiv)).toFixed(2)}`],
+    text: `A group of ${numPeople} friends owes a total debt of $${totalDebt}. If they split the debt equally, how much does each person owe?`,
+    diagram: (
+      <svg width="100%" height="100" viewBox="0 0 200 60" className="mx-auto max-w-sm">
+        <rect x="10" y="10" width="180" height="40" fill="#fff1f2" stroke="#fb7185" rx="4" />
+        <text x="100" y="25" fontSize="10" textAnchor="middle" fill="#e11d48" fontWeight="bold">Total Debt: -$${totalDebt}</text>
+        
+        {/* People icons */}
+        <g transform="translate(45, 35)">
+          <circle cx="0" cy="0" r="3" fill="#64748b" />
+          <path d="M -4 8 Q 0 4 4 8" stroke="#64748b" fill="none" />
+        </g>
+        <g transform="translate(65, 35)">
+          <circle cx="0" cy="0" r="3" fill="#64748b" />
+          <path d="M -4 8 Q 0 4 4 8" stroke="#64748b" fill="none" />
+        </g>
+        <text x="85" y="42" fontSize="10" fill="#64748b">...</text>
+        <g transform="translate(105, 35)">
+          <circle cx="0" cy="0" r="3" fill="#64748b" />
+          <path d="M -4 8 Q 0 4 4 8" stroke="#64748b" fill="none" />
+        </g>
+        
+        <text x="145" y="42" fontSize="10" textAnchor="middle" fill="#64748b" fontWeight="bold">÷ {numPeople} people</text>
+      </svg>
+    ),
+    options: [`$${share}`, `$${(totalDebt / (numPeople - 1)).toFixed(2)}`, `$${(totalDebt - numPeople).toFixed(2)}`, `$${(totalDebt * numPeople).toFixed(2)}`],
     correctAnswer: 0,
-    explanation: `A negative divided by a negative is positive. ${numDiv} ÷ ${denDiv} = ${divRes}.`
+    explanation: `Debt is represented as a negative number: -$${totalDebt}. Dividing by ${numPeople} people: -${totalDebt} ÷ ${numPeople} = -$${share} per person.`
   });
 
   // 51. Scale Drawing Area
