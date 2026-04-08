@@ -26,6 +26,23 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 1,
     text: `A recipe calls for ${r1} cups of flour for every ${r2} cups of sugar. If you use ${flour} cups of flour, how many cups of sugar do you need?`,
+    diagram: (
+      <svg width="100%" height="120" viewBox="0 0 200 60" className="mx-auto max-w-sm">
+        <text x="100" y="15" fontSize="10" textAnchor="middle" fill="#64748b" fontWeight="bold">Recipe Ratio</text>
+        
+        {/* Flour */}
+        <text x="50" y="35" fontSize="10" textAnchor="middle" fill="#eab308" fontWeight="bold">Flour</text>
+        <rect x="20" y="40" width="60" height="15" fill="#fef08a" stroke="#eab308" rx="2" />
+        <text x="50" y="51" fontSize="10" textAnchor="middle" fill="#ca8a04">{r1} cups</text>
+        
+        <text x="100" y="48" fontSize="12" textAnchor="middle" fill="#64748b" fontWeight="bold">:</text>
+        
+        {/* Sugar */}
+        <text x="150" y="35" fontSize="10" textAnchor="middle" fill="#3b82f6" fontWeight="bold">Sugar</text>
+        <rect x="120" y="40" width="60" height="15" fill="#eff6ff" stroke="#3b82f6" rx="2" />
+        <text x="150" y="51" fontSize="10" textAnchor="middle" fill="#2563eb">{r2} cups</text>
+      </svg>
+    ),
     options: [`${sugar - 2} cups`, `${sugar} cups`, `${sugar + 3} cups`, `${sugar * 2} cups`],
     correctAnswer: 1,
     explanation: `The ratio is ${r1}:${r2}. Since flour is ${flour} (${r1} * ${mult}), then sugar must be ${r2} * ${mult} = ${sugar}.`
@@ -223,6 +240,27 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 15,
     text: `A map has a scale of 1 inch = ${scale} miles. If two cities are ${dist} inches apart on the map, how far apart are they in reality?`,
+    diagram: (
+      <svg width="100%" height="100" viewBox="0 0 200 60" className="mx-auto max-w-sm">
+        {/* Map outline */}
+        <rect x="10" y="5" width="180" height="50" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" rx="4" strokeDasharray="4 4" />
+        
+        {/* Cities */}
+        <circle cx="40" cy="30" r="4" fill="#ef4444" />
+        <text x="40" y="20" fontSize="10" textAnchor="middle" fill="#64748b" fontWeight="bold">City A</text>
+        
+        <circle cx="160" cy="30" r="4" fill="#ef4444" />
+        <text x="160" y="20" fontSize="10" textAnchor="middle" fill="#64748b" fontWeight="bold">City B</text>
+        
+        {/* Distance line */}
+        <line x1="40" y1="30" x2="160" y2="30" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="2 2" />
+        <text x="100" y="25" fontSize="10" textAnchor="middle" fill="#3b82f6" fontWeight="bold">{dist} inches</text>
+        
+        {/* Legend */}
+        <rect x="15" y="40" width="60" height="12" fill="#ffffff" stroke="#e2e8f0" rx="2" />
+        <text x="45" y="49" fontSize="8" textAnchor="middle" fill="#64748b">1 in = {scale} mi</text>
+      </svg>
+    ),
     options: [`${scale * dist - 10} miles`, `${scale * dist} miles`, `${scale * dist + 10} miles`, `${scale * 10} miles`],
     correctAnswer: 1,
     explanation: `${dist} inches * ${scale} miles/inch = ${scale * dist} miles.`
@@ -428,6 +466,20 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 32,
     text: `A snail crawls 1/${denDist} of a meter in 1/${denTime} of an hour. What is its speed in meters per hour?`,
+    diagram: (
+      <svg width="100%" height="80" viewBox="0 0 200 40" className="mx-auto max-w-sm">
+        <line x1="20" y1="20" x2="180" y2="20" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4 4" />
+        <text x="100" y="12" fontSize="10" textAnchor="middle" fill="#64748b">Distance: 1/{denDist} m</text>
+        <text x="100" y="35" fontSize="10" textAnchor="middle" fill="#64748b">Time: 1/{denTime} h</text>
+        <circle cx="40" cy="20" r="4" fill="#10b981" />
+        <path d="M 40 20 Q 110 0 160 20" fill="none" stroke="#10b981" strokeWidth="1.5" markerEnd="url(#arrow)" />
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+          </marker>
+        </defs>
+      </svg>
+    ),
     options: [`${denTime}/${denDist} m/hr`, `${denDist}/${denTime} m/hr`, `${denTime * denDist} m/hr`, `1/${denTime * denDist} m/hr`],
     correctAnswer: 0,
     explanation: `Speed = Distance / Time = (1/${denDist}) ÷ (1/${denTime}) = (1/${denDist}) × (${denTime}/1) = ${denTime}/${denDist}.`
@@ -486,6 +538,25 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 37,
     text: `If the dimensions of a rectangle are multiplied by a scale factor of ${sf}, how many times larger will the new area be?`,
+    diagram: (
+      <svg width="100%" height="120" viewBox="0 0 200 80" className="mx-auto max-w-sm">
+        {/* Original Rectangle */}
+        <rect x="30" y="40" width="20" height="15" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2" />
+        <text x="40" y="35" fontSize="10" textAnchor="middle" fill="#64748b">Area = A</text>
+        <text x="40" y="68" fontSize="10" textAnchor="middle" fill="#3b82f6">w</text>
+        <text x="20" y="50" fontSize="10" textAnchor="middle" fill="#3b82f6">h</text>
+        
+        {/* Arrow */}
+        <path d="M 70 47 L 90 47" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrow)" />
+        <text x="80" y="42" fontSize="10" textAnchor="middle" fill="#64748b">Scale ×{sf}</text>
+        
+        {/* Scaled Rectangle */}
+        <rect x="110" y="20" width={20 * sf} height={15 * sf} fill="#f0fdf4" stroke="#22c55e" strokeWidth="2" strokeDasharray="4 4" />
+        <text x={110 + (10 * sf)} y="15" fontSize="10" textAnchor="middle" fill="#64748b">Area = ?</text>
+        <text x={110 + (10 * sf)} y={20 + (15 * sf) + 12} fontSize="10" textAnchor="middle" fill="#22c55e">{sf}w</text>
+        <text x="95" y={20 + (7.5 * sf)} fontSize="10" textAnchor="middle" fill="#22c55e">{sf}h</text>
+      </svg>
+    ),
     options: [`${sf * sf} times`, `${sf} times`, `${sf * 2} times`, `${sf * sf * sf} times`],
     correctAnswer: 0,
     explanation: `When dimensions are scaled by factor k, the area is scaled by k². Here, ${sf}² = ${sf * sf}.`
@@ -558,6 +629,20 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 43,
     text: `A snail crawls ${distFracNum}/${distFracDen} of a meter in ${timeFracNum}/${timeFracDen} of an hour. What is the snail's speed in meters per hour? (Decimal approximation)`,
+    diagram: (
+      <svg width="100%" height="80" viewBox="0 0 200 40" className="mx-auto max-w-sm">
+        <line x1="20" y1="20" x2="180" y2="20" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4 4" />
+        <text x="100" y="12" fontSize="10" textAnchor="middle" fill="#64748b">Distance: {distFracNum}/{distFracDen} m</text>
+        <text x="100" y="35" fontSize="10" textAnchor="middle" fill="#64748b">Time: {timeFracNum}/{timeFracDen} h</text>
+        <circle cx="40" cy="20" r="4" fill="#10b981" />
+        <path d="M 40 20 Q 110 0 160 20" fill="none" stroke="#10b981" strokeWidth="1.5" markerEnd="url(#arrow)" />
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+          </marker>
+        </defs>
+      </svg>
+    ),
     options: [`${speed} m/h`, `${((distFracNum/distFracDen)*(timeFracNum/timeFracDen)).toFixed(2)} m/h`, `${((timeFracNum/timeFracDen)/(distFracNum/distFracDen)).toFixed(2)} m/h`, `1.00 m/h`],
     correctAnswer: 0,
     explanation: `Speed = Distance ÷ Time = (${distFracNum}/${distFracDen}) ÷ (${timeFracNum}/${timeFracDen}) = (${distFracNum}/${distFracDen}) × (${timeFracDen}/${timeFracNum}) ≈ ${speed}.`
@@ -668,6 +753,18 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 51,
     text: `A rectangle has an area of ${origArea} cm². If the dimensions are scaled by a factor of ${scaleFactor}, what is the area of the new rectangle?`,
+    diagram: (
+      <svg width="100%" height="100" viewBox="0 0 200 60" className="mx-auto max-w-sm">
+        <rect x="20" y="20" width="30" height="20" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2" />
+        <text x="35" y="33" fontSize="10" textAnchor="middle" fill="#1e40af" fontWeight="bold">{origArea} cm²</text>
+        
+        <path d="M 65 30 L 95 30" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrow)" />
+        <text x="80" y="25" fontSize="10" textAnchor="middle" fill="#64748b">Scale ×{scaleFactor}</text>
+        
+        <rect x="110" y="10" width="60" height="40" fill="#f0fdf4" stroke="#22c55e" strokeWidth="2" strokeDasharray="4 4" />
+        <text x="140" y="33" fontSize="12" textAnchor="middle" fill="#166534" fontWeight="bold">? cm²</text>
+      </svg>
+    ),
     options: [`${newArea} cm²`, `${origArea * scaleFactor} cm²`, `${origArea * scaleFactor * 2} cm²`, `${origArea + scaleFactor} cm²`],
     correctAnswer: 0,
     explanation: `When dimensions are scaled by k, the area is scaled by k². New Area = ${origArea} × ${scaleFactor}² = ${origArea} × ${scaleFactor * scaleFactor} = ${newArea}.`
@@ -1041,6 +1138,19 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 79,
     text: `Two triangles are similar. A side on the smaller triangle is ${simSide1} cm, and the corresponding side on the larger triangle is ${simSide1 * simScale} cm. If another side on the smaller triangle is ${simSide2} cm, what is the corresponding side on the larger triangle?`,
+    diagram: (
+      <svg width="100%" height="120" viewBox="0 0 200 80" className="mx-auto max-w-sm">
+        {/* Smaller Triangle */}
+        <polygon points="20,60 60,60 40,20" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2" />
+        <text x="40" y="72" fontSize="10" textAnchor="middle" fill="#3b82f6">{simSide1} cm</text>
+        <text x="20" y="35" fontSize="10" textAnchor="middle" fill="#3b82f6">{simSide2} cm</text>
+        
+        {/* Larger Triangle */}
+        <polygon points="90,60 170,60 130,10" fill="#f0fdf4" stroke="#22c55e" strokeWidth="2" />
+        <text x="130" y="72" fontSize="10" textAnchor="middle" fill="#22c55e">{simSide1 * simScale} cm</text>
+        <text x="95" y="30" fontSize="10" textAnchor="middle" fill="#22c55e">? cm</text>
+      </svg>
+    ),
     options: [`${simSide2 * simScale} cm`, `${simSide2 + simScale} cm`, `${(simSide2 / simScale).toFixed(1)} cm`, `${simSide2 * 2} cm`],
     correctAnswer: 0,
     explanation: `The scale factor is ${simSide1 * simScale} / ${simSide1} = ${simScale}. Multiply the other side by the scale factor: ${simSide2} × ${simScale} = ${simSide2 * simScale}.`
@@ -1054,6 +1164,20 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 80,
     text: `A car travels ${speedDist} miles in ${speedTime} hours at a constant speed. How far will it travel in ${newTime} hours at the same speed?`,
+    diagram: (
+      <svg width="100%" height="100" viewBox="0 0 200 50" className="mx-auto max-w-sm">
+        <line x1="20" y1="25" x2="180" y2="25" stroke="#94a3b8" strokeWidth="2" />
+        <circle cx="20" cy="25" r="4" fill="#3b82f6" />
+        <circle cx="100" cy="25" r="4" fill="#3b82f6" />
+        <circle cx="180" cy="25" r="4" fill="#3b82f6" />
+        
+        <text x="60" y="15" fontSize="10" textAnchor="middle" fill="#64748b">{speedDist} miles</text>
+        <text x="60" y="40" fontSize="10" textAnchor="middle" fill="#64748b">{speedTime} hours</text>
+        
+        <text x="140" y="15" fontSize="10" textAnchor="middle" fill="#64748b">? miles</text>
+        <text x="140" y="40" fontSize="10" textAnchor="middle" fill="#64748b">{newTime} hours</text>
+      </svg>
+    ),
     options: [`${speedRate * newTime} miles`, `${speedDist + newTime * 10} miles`, `${speedRate * 2} miles`, `${(speedDist / newTime).toFixed(1)} miles`],
     correctAnswer: 0,
     explanation: `Find the unit rate (speed): ${speedDist} ÷ ${speedTime} = ${speedRate} mph. Multiply by new time: ${speedRate} × ${newTime} = ${speedRate * newTime} miles.`
