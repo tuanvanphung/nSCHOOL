@@ -12,7 +12,13 @@ import {
   BookOpen,
   Send,
   RefreshCw,
-  ArrowLeft
+  ArrowLeft,
+  Flag,
+  Menu,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  FileText
 } from 'lucide-react';
 import { generateQuestions, Question } from './questions';
 
@@ -23,6 +29,10 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
   const [score, setScore] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [flaggedQuestions, setFlaggedQuestions] = useState<Record<number, boolean>>({});
+  const [showReferenceSheet, setShowReferenceSheet] = useState(false);
+  const [showNavGrid, setShowNavGrid] = useState(false);
 
   useEffect(() => {
     setQuestions(generateQuestions());
@@ -34,7 +44,18 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
     setScore(0);
     setStartTime(Date.now());
     setIsSubmitted(false);
+    setCurrentQuestionIndex(0);
+    setFlaggedQuestions({});
+    setShowReferenceSheet(false);
+    setShowNavGrid(false);
     window.scrollTo(0, 0);
+  };
+
+  const toggleFlag = () => {
+    setFlaggedQuestions(prev => ({
+      ...prev,
+      [currentQuestionIndex]: !prev[currentQuestionIndex]
+    }));
   };
 
   const handleRegenerate = () => {
@@ -292,82 +313,157 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
             </motion.div>
           )}
 
-          {currentStep === 'test' && (
+          {currentStep === 'test' && questions.length > 0 && (
             <motion.div
               key="test"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="space-y-4"
+              className="space-y-4 relative"
             >
-              <div className="sticky top-4 z-10 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-4 flex items-center justify-between border border-white/20">
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                    Progress: {answeredCount}/{questions.length}
-                  </div>
-                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <motion.div 
-                      className="h-full bg-blue-500"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                    />
+              {/* Top Navigation Bar (Cambium Style) */}
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex items-center justify-between sticky top-4 z-20">
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => setShowNavGrid(!showNavGrid)}
+                    className="flex items-center gap-2 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors"
+                  >
+                    <Menu className="w-5 h-5" />
+                    <span className="hidden sm:inline">Items</span>
+                  </button>
+                  <div className="font-bold text-slate-700">
+                    Question {currentQuestionIndex + 1} of {questions.length}
                   </div>
                 </div>
-                <button
-                  onClick={handleSubmit}
-                  className="ml-6 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 transition-all"
-                >
-                  <Send className="w-4 h-4" /> Submit Test
-                </button>
+                
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <button
+                    onClick={() => setShowReferenceSheet(true)}
+                    className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors"
+                  >
+                    <FileText className="w-5 h-5" />
+                    <span className="hidden sm:inline">Reference</span>
+                  </button>
+                  <button
+                    onClick={toggleFlag}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors ${
+                      flaggedQuestions[currentQuestionIndex] 
+                        ? 'bg-red-50 text-red-600 border border-red-200' 
+                        : 'text-slate-500 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Flag className={`w-5 h-5 ${flaggedQuestions[currentQuestionIndex] ? 'fill-red-600' : ''}`} />
+                    <span className="hidden sm:inline">{flaggedQuestions[currentQuestionIndex] ? 'Flagged' : 'Flag'}</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="space-y-4">
-                {questions.map((q, qIdx) => (
-                  <div key={q.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                    <div className="flex gap-4">
-                      <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-sm">
-                        {qIdx + 1}
-                      </span>
+              {/* Navigation Grid Dropdown */}
+              <AnimatePresence>
+                {showNavGrid && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute z-30 mt-2 w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 p-4 left-0"
+                  >
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-slate-800">Test Navigation</h3>
+                      <button onClick={() => setShowNavGrid(false)} className="text-slate-400 hover:text-slate-600">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
+                      {questions.map((_, idx) => {
+                        const ans = userAnswers[idx];
+                        const isAnswered = ans !== undefined && 
+                                           (!Array.isArray(ans) || ans.length > 0) &&
+                                           (typeof ans !== 'string' || ans.trim() !== '');
+                        const isFlagged = flaggedQuestions[idx];
+                        const isCurrent = currentQuestionIndex === idx;
+                        
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              setCurrentQuestionIndex(idx);
+                              setShowNavGrid(false);
+                            }}
+                            className={`relative p-2 rounded-lg text-sm font-medium border transition-all ${
+                              isCurrent ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200'
+                            } ${
+                              isAnswered ? 'bg-blue-50 text-blue-700' : 'bg-white text-slate-600 hover:bg-slate-50'
+                            }`}
+                          >
+                            {idx + 1}
+                            {isFlagged && (
+                              <Flag className="w-3 h-3 text-red-500 fill-red-500 absolute -top-1 -right-1" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between">
+                       <div className="text-xs text-slate-500 flex items-center gap-2"><div className="w-3 h-3 bg-blue-50 border border-blue-200 rounded-sm"></div> Answered</div>
+                       <div className="text-xs text-slate-500 flex items-center gap-2"><div className="w-3 h-3 bg-white border border-slate-200 rounded-sm"></div> Unanswered</div>
+                       <div className="text-xs text-slate-500 flex items-center gap-2"><Flag className="w-3 h-3 text-red-500 fill-red-500" /> Flagged</div>
+                    </div>
+                    <div className="mt-4">
+                      <button onClick={handleSubmit} className="w-full py-2 bg-slate-800 text-white rounded-lg font-bold text-sm hover:bg-slate-900">
+                        End Test & Submit
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Current Question */}
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-10 min-h-[400px]">
+                {(() => {
+                  const q = questions[currentQuestionIndex];
+                  const qIdx = currentQuestionIndex;
+                  return (
+                    <div className="flex flex-col gap-6">
                       <div className="flex-1">
-                        <h3 className="text-lg font-medium mb-4 leading-snug">
+                        <h3 className="text-xl font-medium mb-6 leading-relaxed text-slate-800">
                           {q.text}
-                          {q.type === 'multi-select' && <span className="ml-2 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Select all that apply</span>}
+                          {q.type === 'multi-select' && <span className="ml-3 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md align-middle">Select all that apply</span>}
                         </h3>
                         
                         {q.diagram && (
-                          <div className="mb-4 p-3 bg-slate-50 rounded-xl border border-slate-100 inline-block">
+                          <div className="mb-8 p-4 bg-slate-50 rounded-xl border border-slate-100 inline-block">
                             {q.diagram}
                           </div>
                         )}
 
                         {q.type === 'free-response' ? (
-                          <div className="max-w-xs">
+                          <div className="max-w-md">
                             <input
                               type="text"
                               value={userAnswers[qIdx] || ''}
                               onChange={(e) => handleAnswer(qIdx, e.target.value)}
                               placeholder="Type your answer here..."
-                              className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                              className="w-full p-4 text-lg border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                             />
                           </div>
                         ) : q.type === 'multi-select' ? (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          <div className="grid grid-cols-1 gap-3">
                             {q.options?.map((option, oIdx) => {
                               const isSelected = Array.isArray(userAnswers[qIdx]) && userAnswers[qIdx].includes(oIdx);
                               return (
                                 <button
                                   key={oIdx}
                                   onClick={() => handleMultiSelect(qIdx, oIdx)}
-                                  className={`p-3 text-left rounded-xl border transition-all text-sm flex items-center gap-3 ${
+                                  className={`p-4 text-left rounded-xl border-2 transition-all text-base flex items-center gap-4 ${
                                     isSelected 
-                                      ? 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-100' 
-                                      : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50'
+                                      ? 'border-blue-500 bg-blue-50 text-blue-800' 
+                                      : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50 text-slate-700'
                                   }`}
                                 >
-                                  <div className={`w-5 h-5 rounded border flex items-center justify-center ${
+                                  <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${
                                     isSelected ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-300 bg-white'
                                   }`}>
-                                    {isSelected && <CheckCircle2 className="w-3 h-3" />}
+                                    {isSelected && <CheckCircle2 className="w-4 h-4" />}
                                   </div>
                                   {option}
                                 </button>
@@ -375,20 +471,20 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                             })}
                           </div>
                         ) : (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          <div className="grid grid-cols-1 gap-3">
                             {q.options?.map((option, oIdx) => {
                               const isSelected = userAnswers[qIdx] === oIdx;
                               return (
                                 <button
                                   key={oIdx}
                                   onClick={() => handleAnswer(qIdx, oIdx)}
-                                  className={`p-3 text-left rounded-xl border transition-all text-sm flex items-center gap-3 ${
+                                  className={`p-4 text-left rounded-xl border-2 transition-all text-base flex items-center gap-4 ${
                                     isSelected 
-                                      ? 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-100' 
-                                      : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50'
+                                      ? 'border-blue-500 bg-blue-50 text-blue-800' 
+                                      : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50 text-slate-700'
                                   }`}
                                 >
-                                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                  <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
                                     isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
                                   }`}>
                                     {String.fromCharCode(65 + oIdx)}
@@ -401,17 +497,39 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })()}
               </div>
 
-              <div className="pt-8 pb-12 text-center">
+              {/* Bottom Navigation */}
+              <div className="flex items-center justify-between pt-4">
                 <button
-                  onClick={handleSubmit}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-12 rounded-2xl transition-all shadow-xl"
+                  onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
+                  disabled={currentQuestionIndex === 0}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
+                    currentQuestionIndex === 0 
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
+                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
+                  }`}
                 >
-                  Submit Final Answers
+                  <ChevronLeft className="w-5 h-5" /> Back
                 </button>
+                
+                {currentQuestionIndex === questions.length - 1 ? (
+                  <button
+                    onClick={handleSubmit}
+                    className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all shadow-md"
+                  >
+                    <Send className="w-5 h-5" /> Submit Test
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setCurrentQuestionIndex(prev => Math.min(questions.length - 1, prev + 1))}
+                    className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md"
+                  >
+                    Next <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             </motion.div>
           )}
@@ -582,6 +700,99 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
               </div>
             </motion.div>
           )}
+          {/* Reference Sheet Modal */}
+          <AnimatePresence>
+            {showReferenceSheet && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+                onClick={() => setShowReferenceSheet(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  onClick={e => e.stopPropagation()}
+                  className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                >
+                  <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center z-10">
+                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                      <FileText className="w-6 h-6 text-blue-600" />
+                      Grade 7 FAST Mathematics Reference Sheet
+                    </h2>
+                    <button onClick={() => setShowReferenceSheet(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+                  <div className="p-6 space-y-8 text-slate-700">
+                    <div>
+                      <h3 className="font-bold text-lg mb-3 border-b pb-2">Conversions</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                        <p>1 foot = 12 inches</p>
+                        <p>1 cup = 8 fluid ounces</p>
+                        <p>1 yard = 3 feet</p>
+                        <p>1 pint = 2 cups</p>
+                        <p>1 mile = 5,280 feet</p>
+                        <p>1 quart = 2 pints</p>
+                        <p>1 mile = 1,760 yards</p>
+                        <p>1 gallon = 4 quarts</p>
+                        <p>1 meter = 100 centimeters</p>
+                        <p>1 pound = 16 ounces</p>
+                        <p>1 meter = 1000 millimeters</p>
+                        <p>1 ton = 2,000 pounds</p>
+                        <p>1 kilometer = 1000 meters</p>
+                        <p>1 gram = 1000 milligrams</p>
+                        <p>1 liter = 1000 milliliters</p>
+                        <p>1 kilogram = 1000 grams</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-bold text-lg mb-3 border-b pb-2">Area Formulas</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="font-semibold">Triangle</p>
+                          <p>A = ½bh</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Rectangle</p>
+                          <p>A = lw</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Parallelogram</p>
+                          <p>A = bh</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Trapezoid</p>
+                          <p>A = ½h(b₁ + b₂)</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Circle</p>
+                          <p>A = πr²</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-lg mb-3 border-b pb-2">Circumference & Volume</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="font-semibold">Circumference of a Circle</p>
+                          <p>C = πd  or  C = 2πr</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Volume of a Prism</p>
+                          <p>V = Bh</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </AnimatePresence>
       </div>
     </div>
