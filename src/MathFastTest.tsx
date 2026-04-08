@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { renderToString } from 'react-dom/server';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   CheckCircle2, 
@@ -18,7 +19,7 @@ import { generateQuestions, Question } from './questions';
 export default function MathFastTest({ onBack }: { onBack: () => void }) {
   const [currentStep, setCurrentStep] = useState<'welcome' | 'test' | 'results'>('welcome');
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [userAnswers, setUserAnswers] = useState<Record<number, number>>({});
+  const [userAnswers, setUserAnswers] = useState<Record<number, any>>({});
   const [score, setScore] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -40,13 +41,38 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
     setQuestions(generateQuestions());
   };
 
-  const handleAnswer = (questionIndex: number, optionIndex: number) => {
+  const handleAnswer = (questionIndex: number, value: any) => {
     if (isSubmitted) return;
-
     setUserAnswers(prev => ({
       ...prev,
-      [questionIndex]: optionIndex
+      [questionIndex]: value
     }));
+  };
+
+  const handleMultiSelect = (questionIndex: number, optionIndex: number) => {
+    if (isSubmitted) return;
+    setUserAnswers(prev => {
+      const current = Array.isArray(prev[questionIndex]) ? prev[questionIndex] : [];
+      if (current.includes(optionIndex)) {
+        return { ...prev, [questionIndex]: current.filter((i: number) => i !== optionIndex) };
+      } else {
+        return { ...prev, [questionIndex]: [...current, optionIndex] };
+      }
+    });
+  };
+
+  const checkCorrect = (q: Question, userAnswer: any) => {
+    if (userAnswer === undefined) return false;
+    if (q.type === 'multi-select') {
+      if (!Array.isArray(userAnswer)) return false;
+      const sortedUser = [...userAnswer].sort();
+      const sortedCorrect = [...(q.correctAnswers || [])].sort();
+      return sortedUser.length === sortedCorrect.length && sortedUser.every((val, index) => val === sortedCorrect[index]);
+    } else if (q.type === 'free-response') {
+      return String(userAnswer).trim().toLowerCase() === String(q.correctValue).trim().toLowerCase();
+    } else {
+      return userAnswer === q.correctAnswer;
+    }
   };
 
   const generateHTMLReport = (finalScore: number) => {
@@ -63,22 +89,43 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
     let questionsHtml = '';
     questions.forEach((q, idx) => {
       const userAnswer = userAnswers[idx];
-      const isCorrect = userAnswer === q.correctAnswer;
-      const isUnanswered = userAnswer === undefined;
+      const isCorrect = checkCorrect(q, userAnswer);
+      const isUnanswered = userAnswer === undefined || (Array.isArray(userAnswer) && userAnswer.length === 0) || (typeof userAnswer === 'string' && userAnswer.trim() === '');
       
       const explanationSteps = q.explanation.split(/\.\s+|\.$/).filter(step => step.trim().length > 0).map(step => step.trim() + '.');
       const explanationHtml = explanationSteps.map(step => `<div style="margin-bottom: 4px;">• ${step}</div>`).join('');
 
       let optionsHtml = '';
-      q.options.forEach((opt, oIdx) => {
-        let optClass = 'p-2 text-xs rounded-lg border border-slate-100 text-slate-400';
-        if (oIdx === q.correctAnswer) {
-          optClass = 'p-2 text-xs rounded-lg border bg-green-50 border-green-200 text-green-700 font-bold';
-        } else if (oIdx === userAnswer && !isCorrect) {
-          optClass = 'p-2 text-xs rounded-lg border bg-red-50 border-red-200 text-red-700';
-        }
-        optionsHtml += `<div class="${optClass}">${String.fromCharCode(65 + oIdx)}. ${opt}</div>`;
-      });
+      if (q.type === 'free-response') {
+        optionsHtml = `<div class="p-3 text-sm rounded-lg border border-slate-100 text-slate-600 bg-slate-50">
+          <strong>Your Answer:</strong> ${isUnanswered ? 'None' : userAnswer}
+          ${!isCorrect ? `<br/><strong class="text-green-600 mt-2 block">Correct Answer:</strong> ${q.correctValue}` : ''}
+        </div>`;
+      } else if (q.type === 'multi-select') {
+        q.options?.forEach((opt, oIdx) => {
+          const isUserSelected = Array.isArray(userAnswer) && userAnswer.includes(oIdx);
+          const isActuallyCorrect = q.correctAnswers?.includes(oIdx);
+          let optClass = 'p-2 text-xs rounded-lg border border-slate-100 text-slate-400';
+          if (isActuallyCorrect && isUserSelected) {
+            optClass = 'p-2 text-xs rounded-lg border bg-green-50 border-green-200 text-green-700 font-bold';
+          } else if (isActuallyCorrect && !isUserSelected) {
+            optClass = 'p-2 text-xs rounded-lg border bg-green-50 border-green-200 text-green-700 border-dashed';
+          } else if (!isActuallyCorrect && isUserSelected) {
+            optClass = 'p-2 text-xs rounded-lg border bg-red-50 border-red-200 text-red-700';
+          }
+          optionsHtml += `<div class="${optClass}">[${isUserSelected ? '✓' : ' '}] ${opt}</div>`;
+        });
+      } else {
+        q.options?.forEach((opt, oIdx) => {
+          let optClass = 'p-2 text-xs rounded-lg border border-slate-100 text-slate-400';
+          if (oIdx === q.correctAnswer) {
+            optClass = 'p-2 text-xs rounded-lg border bg-green-50 border-green-200 text-green-700 font-bold';
+          } else if (oIdx === userAnswer && !isCorrect) {
+            optClass = 'p-2 text-xs rounded-lg border bg-red-50 border-red-200 text-red-700';
+          }
+          optionsHtml += `<div class="${optClass}">${String.fromCharCode(65 + oIdx)}. ${opt}</div>`;
+        });
+      }
 
       questionsHtml += `
         <div class="p-5 rounded-2xl border bg-white shadow-sm mb-4 ${isCorrect ? 'border-green-100' : 'border-red-100'}">
@@ -92,7 +139,9 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                 ${isUnanswered ? '<span class="ml-2 text-[10px] uppercase tracking-wider font-bold text-red-500 bg-red-50 px-2 py-1 rounded-md border border-red-100">Unanswered</span>' : ''}
               </p>
               
-              <div class="grid grid-cols-2 gap-2 mb-4">
+              ${q.diagram ? `<div class="mb-4 p-3 bg-slate-50 rounded-xl border border-slate-100 inline-block">${renderToString(q.diagram as any)}</div>` : ''}
+
+              <div class="${q.type === 'free-response' ? '' : 'grid grid-cols-2 gap-2'} mb-4">
                 ${optionsHtml}
               </div>
 
@@ -158,7 +207,7 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
   const handleSubmit = () => {
     let finalScore = 0;
     questions.forEach((q, idx) => {
-      if (userAnswers[idx] === q.correctAnswer) {
+      if (checkCorrect(q, userAnswers[idx])) {
         finalScore += 1;
       }
     });
@@ -176,7 +225,13 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
     return `${minutes}m ${remainingSeconds}s`;
   };
 
-  const answeredCount = Object.keys(userAnswers).length;
+  const answeredCount = Object.keys(userAnswers).filter(k => {
+    const ans = userAnswers[Number(k)];
+    if (ans === undefined) return false;
+    if (Array.isArray(ans) && ans.length === 0) return false;
+    if (typeof ans === 'string' && ans.trim() === '') return false;
+    return true;
+  }).length;
   const progress = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
 
   return (
@@ -274,7 +329,10 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                         {qIdx + 1}
                       </span>
                       <div className="flex-1">
-                        <h3 className="text-lg font-medium mb-4 leading-snug">{q.text}</h3>
+                        <h3 className="text-lg font-medium mb-4 leading-snug">
+                          {q.text}
+                          {q.type === 'multi-select' && <span className="ml-2 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Select all that apply</span>}
+                        </h3>
                         
                         {q.diagram && (
                           <div className="mb-4 p-3 bg-slate-50 rounded-xl border border-slate-100 inline-block">
@@ -282,29 +340,65 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                           </div>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {q.options.map((option, oIdx) => {
-                            const isSelected = userAnswers[qIdx] === oIdx;
-                            return (
-                              <button
-                                key={oIdx}
-                                onClick={() => handleAnswer(qIdx, oIdx)}
-                                className={`p-3 text-left rounded-xl border transition-all text-sm flex items-center gap-3 ${
-                                  isSelected 
-                                    ? 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-100' 
-                                    : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50'
-                                }`}
-                              >
-                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                  isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
-                                }`}>
-                                  {String.fromCharCode(65 + oIdx)}
-                                </span>
-                                {option}
-                              </button>
-                            );
-                          })}
-                        </div>
+                        {q.type === 'free-response' ? (
+                          <div className="max-w-xs">
+                            <input
+                              type="text"
+                              value={userAnswers[qIdx] || ''}
+                              onChange={(e) => handleAnswer(qIdx, e.target.value)}
+                              placeholder="Type your answer here..."
+                              className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                            />
+                          </div>
+                        ) : q.type === 'multi-select' ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {q.options?.map((option, oIdx) => {
+                              const isSelected = Array.isArray(userAnswers[qIdx]) && userAnswers[qIdx].includes(oIdx);
+                              return (
+                                <button
+                                  key={oIdx}
+                                  onClick={() => handleMultiSelect(qIdx, oIdx)}
+                                  className={`p-3 text-left rounded-xl border transition-all text-sm flex items-center gap-3 ${
+                                    isSelected 
+                                      ? 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-100' 
+                                      : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <div className={`w-5 h-5 rounded border flex items-center justify-center ${
+                                    isSelected ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-300 bg-white'
+                                  }`}>
+                                    {isSelected && <CheckCircle2 className="w-3 h-3" />}
+                                  </div>
+                                  {option}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {q.options?.map((option, oIdx) => {
+                              const isSelected = userAnswers[qIdx] === oIdx;
+                              return (
+                                <button
+                                  key={oIdx}
+                                  onClick={() => handleAnswer(qIdx, oIdx)}
+                                  className={`p-3 text-left rounded-xl border transition-all text-sm flex items-center gap-3 ${
+                                    isSelected 
+                                      ? 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-100' 
+                                      : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
+                                  }`}>
+                                    {String.fromCharCode(65 + oIdx)}
+                                  </span>
+                                  {option}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -374,8 +468,8 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                 <h3 className="text-xl font-bold px-2">Detailed Review</h3>
                 {questions.map((q, idx) => {
                   const userAnswer = userAnswers[idx];
-                  const isCorrect = userAnswer === q.correctAnswer;
-                  const isUnanswered = userAnswer === undefined;
+                  const isCorrect = checkCorrect(q, userAnswer);
+                  const isUnanswered = userAnswer === undefined || (Array.isArray(userAnswer) && userAnswer.length === 0) || (typeof userAnswer === 'string' && userAnswer.trim() === '');
                   
                   const explanationSteps = q.explanation.split(/\.\s+|\.$/).filter(step => step.trim().length > 0).map(step => step.trim() + '.');
 
@@ -400,22 +494,56 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                             {isUnanswered && <span className="ml-2 text-[10px] uppercase tracking-wider font-bold text-red-500 bg-red-50 px-2 py-1 rounded-md border border-red-100">Unanswered</span>}
                           </p>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                            {q.options.map((opt, oIdx) => (
-                              <div 
-                                key={oIdx}
-                                className={`p-2 text-xs rounded-lg border ${
-                                  oIdx === q.correctAnswer 
-                                    ? 'bg-green-50 border-green-200 text-green-700 font-bold' 
-                                    : oIdx === userAnswer && !isCorrect
-                                      ? 'bg-red-50 border-red-200 text-red-700'
-                                      : 'border-slate-100 text-slate-400'
-                                }`}
-                              >
-                                {String.fromCharCode(65 + oIdx)}. {opt}
-                              </div>
-                            ))}
-                          </div>
+                          {q.type === 'free-response' ? (
+                            <div className="p-3 text-sm rounded-lg border border-slate-100 text-slate-600 bg-slate-50 mb-4">
+                              <strong>Your Answer:</strong> {isUnanswered ? 'None' : userAnswer}
+                              {!isCorrect && (
+                                <div className="text-green-600 mt-2">
+                                  <strong>Correct Answer:</strong> {q.correctValue}
+                                </div>
+                              )}
+                            </div>
+                          ) : q.type === 'multi-select' ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                              {q.options?.map((opt, oIdx) => {
+                                const isUserSelected = Array.isArray(userAnswer) && userAnswer.includes(oIdx);
+                                const isActuallyCorrect = q.correctAnswers?.includes(oIdx);
+                                return (
+                                  <div 
+                                    key={oIdx}
+                                    className={`p-2 text-xs rounded-lg border ${
+                                      isActuallyCorrect && isUserSelected
+                                        ? 'bg-green-50 border-green-200 text-green-700 font-bold' 
+                                        : isActuallyCorrect && !isUserSelected
+                                          ? 'bg-green-50 border-green-200 text-green-700 border-dashed'
+                                          : !isActuallyCorrect && isUserSelected
+                                            ? 'bg-red-50 border-red-200 text-red-700'
+                                            : 'border-slate-100 text-slate-400'
+                                    }`}
+                                  >
+                                    [{isUserSelected ? '✓' : ' '}] {opt}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                              {q.options?.map((opt, oIdx) => (
+                                <div 
+                                  key={oIdx}
+                                  className={`p-2 text-xs rounded-lg border ${
+                                    oIdx === q.correctAnswer 
+                                      ? 'bg-green-50 border-green-200 text-green-700 font-bold' 
+                                      : oIdx === userAnswer && !isCorrect
+                                        ? 'bg-red-50 border-red-200 text-red-700'
+                                        : 'border-slate-100 text-slate-400'
+                                  }`}
+                                >
+                                  {String.fromCharCode(65 + oIdx)}. {opt}
+                                </div>
+                              ))}
+                            </div>
+                          )}
 
                           {!isCorrect ? (
                             <div className="mt-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100">

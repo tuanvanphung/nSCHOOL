@@ -3,8 +3,11 @@ import React from 'react';
 export interface Question {
   id: number;
   text: string;
-  options: string[];
-  correctAnswer: number;
+  type?: 'multiple-choice' | 'multi-select' | 'free-response';
+  options?: string[];
+  correctAnswer?: number;
+  correctAnswers?: number[];
+  correctValue?: string;
   explanation: string;
   diagram?: React.ReactNode;
 }
@@ -28,16 +31,22 @@ export const generateQuestions = (): Question[] => {
     explanation: `The ratio is ${r1}:${r2}. Since flour is ${flour} (${r1} * ${mult}), then sugar must be ${r2} * ${mult} = ${sugar}.`
   });
 
-  // 2. Expressions
+  // 2. Expressions (Multi-Select)
   const a = getRandomInt(2, 6);
   const b = getRandomInt(2, 8);
   const c = getRandomInt(1, 5);
   qs.push({
     id: 2,
-    text: `Which expression is equivalent to ${a}(x + ${b}) - ${c}?`,
-    options: [`${a}x + ${a * b - c}`, `${a}x + ${a * b}`, `${a}x + ${b - c}`, `${a}x + ${a * b + c}`],
-    correctAnswer: 0,
-    explanation: `${a}(x + ${b}) - ${c} = ${a}x + ${a * b} - ${c} = ${a}x + ${a * b - c}.`
+    type: 'multi-select',
+    text: `Which expressions are equivalent to ${a}(x + ${b}) - ${c}? Select ALL that apply.`,
+    options: [
+      `${a}x + ${a * b - c}`, 
+      `${a}x + ${a * b} - ${c}`, 
+      `${a}x + ${b - c}`, 
+      `${a}(x) + ${a}(${b}) - ${c}`
+    ],
+    correctAnswers: [0, 1, 3],
+    explanation: `Distribute the ${a}: ${a}x + ${a * b} - ${c}. Then combine constants: ${a}x + ${a * b - c}. The expression ${a}(x) + ${a}(${b}) - ${c} shows the unsimplified distribution.`
   });
 
   // 3. Integers
@@ -59,19 +68,42 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 4,
     text: `A circle has a radius of ${radius} cm. What is its approximate area? (Use π ≈ 3.14)`,
+    diagram: (
+      <svg width="120" height="120" viewBox="0 0 100 100" className="mx-auto">
+        <circle cx="50" cy="50" r="40" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2" />
+        <line x1="50" y1="50" x2="90" y2="50" stroke="#64748b" strokeWidth="2" strokeDasharray="4" />
+        <circle cx="50" cy="50" r="2" fill="#0f172a" />
+        <text x="60" y="45" fontSize="12" fill="#0f172a" fontWeight="bold">r = {radius} cm</text>
+      </svg>
+    ),
     options: [`${(2 * 3.14 * radius).toFixed(2)} cm²`, `${(3.14 * radius).toFixed(2)} cm²`, `${area} cm²`, `${(area as any * 2).toFixed(2)} cm²`],
     correctAnswer: 2,
     explanation: `Area = πr² = 3.14 * ${radius}² = 3.14 * ${radius * radius} = ${area}.`
   });
 
   // 5. Proportionality
-  const k = (getRandomInt(15, 45) / 10).toFixed(1);
+  const k = parseFloat((getRandomInt(15, 45) / 10).toFixed(1));
   qs.push({
     id: 5,
-    text: `Identify the constant of proportionality in the equation y = ${k}x.`,
-    options: ["y", "x", `${k}`, "0"],
+    text: `The table below shows a proportional relationship between x and y. What is the constant of proportionality?`,
+    diagram: (
+      <table className="mx-auto border-collapse border border-slate-300 text-center text-sm w-48">
+        <thead>
+          <tr className="bg-slate-100">
+            <th className="border border-slate-300 px-4 py-2 font-bold">x</th>
+            <th className="border border-slate-300 px-4 py-2 font-bold">y</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td className="border border-slate-300 px-4 py-2">2</td><td className="border border-slate-300 px-4 py-2">{(2 * k).toFixed(1)}</td></tr>
+          <tr><td className="border border-slate-300 px-4 py-2">4</td><td className="border border-slate-300 px-4 py-2">{(4 * k).toFixed(1)}</td></tr>
+          <tr><td className="border border-slate-300 px-4 py-2">6</td><td className="border border-slate-300 px-4 py-2">{(6 * k).toFixed(1)}</td></tr>
+        </tbody>
+      </table>
+    ),
+    options: [`${(k * 2).toFixed(1)}`, `${(k / 2).toFixed(1)}`, `${k}`, "0"],
     correctAnswer: 2,
-    explanation: `In the form y = kx, k is the constant of proportionality. Here, k = ${k}.`
+    explanation: `The constant of proportionality is y/x. For any row, y/x = ${(2*k).toFixed(1)}/2 = ${k}.`
   });
 
   // 6. Percent Discount
@@ -247,16 +279,16 @@ export const generateQuestions = (): Question[] => {
     explanation: `Area = (1/2) * base * height = (1/2) * ${b20} * ${h20} = ${(b20 * h20) / 2}.`
   });
 
-  // 21. Simple Interest
+  // 21. Simple Interest (Free Response)
   const principal = getRandomInt(1, 5) * 100;
   const rate = getRandomInt(2, 6);
   const time = getRandomInt(2, 5);
   const interest = (principal * rate * time) / 100;
   qs.push({
     id: 21,
-    text: `You deposit $${principal} in an account earning ${rate}% simple interest annually. How much interest will you earn in ${time} years?`,
-    options: [`$${interest}`, `$${interest + principal}`, `$${interest / time}`, `$${principal * rate}`],
-    correctAnswer: 0,
+    type: 'free-response',
+    text: `You deposit $${principal} in an account earning ${rate}% simple interest annually. How much interest will you earn in ${time} years? (Enter just the number)`,
+    correctValue: `${interest}`,
     explanation: `Simple Interest = Principal × Rate × Time = ${principal} × 0.0${rate} × ${time} = ${interest}.`
   });
 
@@ -334,18 +366,33 @@ export const generateQuestions = (): Question[] => {
     explanation: `Experimental probability = (number of times event occurred) / (total trials) = ${heads}/${flips}.`
   });
 
-  // 29. Mean
-  const m1 = getRandomInt(2, 5);
-  const m2 = getRandomInt(6, 9);
-  const m3 = getRandomInt(10, 15);
-  const m4 = getRandomInt(16, 20);
-  const mean = (m1 + m2 + m3 + m4) / 4;
+  // 29. Mean (Dot Plot - Free Response)
+  const dot1 = getRandomInt(1, 3);
+  const dot2 = getRandomInt(4, 6);
+  const dot3 = getRandomInt(7, 9);
+  const dot4 = getRandomInt(10, 12);
+  const mean = (dot1 + dot2 + dot3 + dot4) / 4;
   qs.push({
     id: 29,
-    text: `Find the mean of the data set: ${m1}, ${m2}, ${m3}, ${m4}`,
-    options: [`${mean}`, `${mean + 1}`, `${mean - 1}`, `${m2}`],
-    correctAnswer: 0,
-    explanation: `Mean = (${m1} + ${m2} + ${m3} + ${m4}) / 4 = ${(m1 + m2 + m3 + m4)} / 4 = ${mean}.`
+    type: 'free-response',
+    text: `Find the mean of the data set shown in the dot plot below.`,
+    diagram: (
+      <svg width="300" height="80" viewBox="-2 0 16 40" className="mx-auto">
+        <line x1="0" y1="30" x2="14" y2="30" stroke="#64748b" strokeWidth="0.5" />
+        {[0, 2, 4, 6, 8, 10, 12, 14].map(x => (
+          <g key={x}>
+            <line x1={x} y1="28" x2={x} y2="32" stroke="#64748b" strokeWidth="0.5" />
+            <text x={x} y="38" fontSize="4" textAnchor="middle" fill="#64748b">{x}</text>
+          </g>
+        ))}
+        <circle cx={dot1} cy="25" r="1" fill="#3b82f6" />
+        <circle cx={dot2} cy="25" r="1" fill="#3b82f6" />
+        <circle cx={dot3} cy="25" r="1" fill="#3b82f6" />
+        <circle cx={dot4} cy="25" r="1" fill="#3b82f6" />
+      </svg>
+    ),
+    correctValue: `${mean}`,
+    explanation: `The data points are ${dot1}, ${dot2}, ${dot3}, and ${dot4}. Mean = (${dot1} + ${dot2} + ${dot3} + ${dot4}) / 4 = ${(dot1 + dot2 + dot3 + dot4)} / 4 = ${mean}.`
   });
 
   // 30. Factoring Expressions
@@ -572,6 +619,19 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 48,
     text: `What is the distance between ${ptA} and ${ptB} on a number line?`,
+    diagram: (
+      <svg width="300" height="60" viewBox="-20 0 40 20" className="mx-auto">
+        <line x1="-18" y1="10" x2="18" y2="10" stroke="#64748b" strokeWidth="0.5" />
+        <line x1="0" y1="8" x2="0" y2="12" stroke="#64748b" strokeWidth="0.5" />
+        <text x="0" y="18" fontSize="4" textAnchor="middle" fill="#64748b">0</text>
+        
+        <circle cx={ptA} cy="10" r="1.5" fill="#ef4444" />
+        <text x={ptA} y="6" fontSize="4" textAnchor="middle" fill="#ef4444" fontWeight="bold">{ptA}</text>
+        
+        <circle cx={ptB} cy="10" r="1.5" fill="#3b82f6" />
+        <text x={ptB} y="6" fontSize="4" textAnchor="middle" fill="#3b82f6" fontWeight="bold">{ptB}</text>
+      </svg>
+    ),
     options: [`${Math.abs(ptA - ptB)}`, `${ptA + ptB}`, `${Math.abs(ptA + ptB)}`, `${ptB - Math.abs(ptA)}`],
     correctAnswer: 0,
     explanation: `Distance = |a - b| = |${ptA} - ${ptB}| = |-${Math.abs(ptA - ptB)}| = ${Math.abs(ptA - ptB)}.`
@@ -643,6 +703,19 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 54,
     text: `Find the volume of a triangular prism. The triangular base has a base of ${baseTri} cm and a height of ${heightTri} cm. The length of the prism is ${lengthPrism} cm.`,
+    diagram: (
+      <svg width="150" height="120" viewBox="0 0 150 120" className="mx-auto">
+        <polygon points="30,80 80,80 55,30" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2" />
+        <polygon points="80,80 130,60 105,10 55,30" fill="none" stroke="#3b82f6" strokeWidth="2" />
+        <line x1="30" y1="80" x2="80" y2="60" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4" />
+        <line x1="80" y1="60" x2="130" y2="60" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4" />
+        <line x1="80" y1="60" x2="105" y2="10" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4" />
+        <line x1="55" y1="30" x2="55" y2="80" stroke="#ef4444" strokeWidth="1" strokeDasharray="2" />
+        <text x="55" y="95" fontSize="12" fill="#0f172a" textAnchor="middle">b={baseTri}</text>
+        <text x="40" y="60" fontSize="12" fill="#ef4444">h={heightTri}</text>
+        <text x="110" y="85" fontSize="12" fill="#0f172a">L={lengthPrism}</text>
+      </svg>
+    ),
     options: [`${volTriPrism} cm³`, `${volTriPrism * 2} cm³`, `${baseTri * heightTri * lengthPrism} cm³`, `${volTriPrism / 2} cm³`],
     correctAnswer: 0,
     explanation: `Volume = Area of Base × Length. Area of triangle = ½ × ${baseTri} × ${heightTri} = ${0.5 * baseTri * heightTri}. Volume = ${0.5 * baseTri * heightTri} × ${lengthPrism} = ${volTriPrism}.`
@@ -666,6 +739,17 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 56,
     text: `A spinner is spun ${trials} times and lands on red ${successes} times. What is the experimental probability of landing on red as a percentage?`,
+    diagram: (
+      <svg width="120" height="120" viewBox="0 0 100 100" className="mx-auto">
+        <circle cx="50" cy="50" r="40" fill="#f8fafc" stroke="#94a3b8" strokeWidth="2" />
+        <path d="M50 50 L50 10 A40 40 0 0 1 90 50 Z" fill="#ef4444" />
+        <path d="M50 50 L90 50 A40 40 0 0 1 50 90 Z" fill="#3b82f6" />
+        <path d="M50 50 L50 90 A40 40 0 0 1 10 50 Z" fill="#22c55e" />
+        <path d="M50 50 L10 50 A40 40 0 0 1 50 10 Z" fill="#eab308" />
+        <circle cx="50" cy="50" r="4" fill="#0f172a" />
+        <polygon points="50,50 55,45 65,25 45,45" fill="#0f172a" transform="rotate(45 50 50)" />
+      </svg>
+    ),
     options: [`${expProb}%`, `${((successes / (trials + successes)) * 100).toFixed(1)}%`, `${(100 - parseFloat(expProb)).toFixed(1)}%`, `${((trials / successes) * 10).toFixed(1)}%`],
     correctAnswer: 0,
     explanation: `Experimental Probability = (Number of successes / Total trials) × 100 = (${successes} / ${trials}) × 100 = ${expProb}%.`
@@ -701,13 +785,35 @@ export const generateQuestions = (): Question[] => {
     explanation: `P(1st Red) = ${marblesRed}/${totalMarbles}. P(2nd Red | 1st was Red) = ${marblesRed - 1}/${totalMarbles - 1}. Multiply them: ${marblesRed * (marblesRed - 1)}/${totalMarbles * (totalMarbles - 1)}.`
   });
 
-  // 60. Mean Absolute Deviation (MAD)
+  // 60. Box Plot (Multiple Choice)
+  const min = getRandomInt(10, 20);
+  const q1 = min + getRandomInt(5, 10);
+  const median = q1 + getRandomInt(5, 10);
+  const q3 = median + getRandomInt(5, 10);
+  const max = q3 + getRandomInt(5, 10);
   qs.push({
     id: 60,
-    text: `A data set has values: 2, 4, 6, 8. What is the Mean Absolute Deviation (MAD)?`,
-    options: ["2", "5", "0", "4"],
+    text: `The box plot below shows the test scores of a math class. What is the median score?`,
+    diagram: (
+      <svg width="300" height="100" viewBox="0 0 100 40" className="mx-auto">
+        <line x1="0" y1="30" x2="100" y2="30" stroke="#64748b" strokeWidth="0.5" />
+        {[0, 20, 40, 60, 80, 100].map(x => (
+          <g key={x}>
+            <line x1={x} y1="28" x2={x} y2="32" stroke="#64748b" strokeWidth="0.5" />
+            <text x={x} y="38" fontSize="4" textAnchor="middle" fill="#64748b">{x}</text>
+          </g>
+        ))}
+        <line x1={min} y1="15" x2={q1} y2="15" stroke="#3b82f6" strokeWidth="1" />
+        <line x1={q3} y1="15" x2={max} y2="15" stroke="#3b82f6" strokeWidth="1" />
+        <rect x={q1} y="10" width={q3 - q1} height="10" fill="#eff6ff" stroke="#3b82f6" strokeWidth="1" />
+        <line x1={median} y1="10" x2={median} y2="20" stroke="#3b82f6" strokeWidth="1" />
+        <line x1={min} y1="12" x2={min} y2="18" stroke="#3b82f6" strokeWidth="1" />
+        <line x1={max} y1="12" x2={max} y2="18" stroke="#3b82f6" strokeWidth="1" />
+      </svg>
+    ),
+    options: [`${median}`, `${q1}`, `${q3}`, `${max}`],
     correctAnswer: 0,
-    explanation: `Mean = (2+4+6+8)/4 = 5. Absolute deviations from 5: |2-5|=3, |4-5|=1, |6-5|=1, |8-5|=3. MAD = (3+1+1+3)/4 = 8/4 = 2.`
+    explanation: `In a box plot, the vertical line inside the box represents the median. The median is ${median}.`
   });
 
   // 61. Comparing Populations (Means)
@@ -864,6 +970,19 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 74,
     text: `Find the volume of a rectangular prism with length ${lPrism} cm, width ${wPrism} cm, and height ${hPrism} cm.`,
+    diagram: (
+      <svg width="150" height="120" viewBox="0 0 150 120" className="mx-auto">
+        <rect x="40" y="20" width="80" height="60" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4" />
+        <line x1="20" y1="40" x2="40" y2="20" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4" />
+        <line x1="100" y1="40" x2="120" y2="20" stroke="#3b82f6" strokeWidth="2" />
+        <line x1="20" y1="100" x2="40" y2="80" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4" />
+        <line x1="100" y1="100" x2="120" y2="80" stroke="#3b82f6" strokeWidth="2" />
+        <rect x="20" y="40" width="80" height="60" fill="#eff6ff" fillOpacity="0.5" stroke="#3b82f6" strokeWidth="2" />
+        <text x="60" y="115" fontSize="12" fill="#0f172a" textAnchor="middle">{lPrism} cm</text>
+        <text x="125" y="60" fontSize="12" fill="#0f172a">{wPrism} cm</text>
+        <text x="5" y="75" fontSize="12" fill="#0f172a">{hPrism} cm</text>
+      </svg>
+    ),
     options: [`${lPrism * wPrism * hPrism} cm³`, `${2 * (lPrism*wPrism + wPrism*hPrism + lPrism*hPrism)} cm³`, `${lPrism + wPrism + hPrism} cm³`, `${(lPrism * wPrism * hPrism) / 2} cm³`],
     correctAnswer: 0,
     explanation: `Volume = length × width × height = ${lPrism} × ${wPrism} × ${hPrism} = ${lPrism * wPrism * hPrism}.`
