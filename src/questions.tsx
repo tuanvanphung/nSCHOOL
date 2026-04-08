@@ -377,18 +377,18 @@ export const generateQuestions = (): Question[] => {
     type: 'free-response',
     text: `Find the mean of the data set shown in the dot plot below.`,
     diagram: (
-      <svg width="300" height="80" viewBox="-2 0 16 40" className="mx-auto">
-        <line x1="0" y1="30" x2="14" y2="30" stroke="#64748b" strokeWidth="0.5" />
+      <svg width="100%" height="160" viewBox="-2 0 18 15" className="mx-auto max-w-md">
+        <line x1="-1" y1="10" x2="15" y2="10" stroke="#64748b" strokeWidth="0.1" />
         {[0, 2, 4, 6, 8, 10, 12, 14].map(x => (
           <g key={x}>
-            <line x1={x} y1="28" x2={x} y2="32" stroke="#64748b" strokeWidth="0.5" />
-            <text x={x} y="38" fontSize="4" textAnchor="middle" fill="#64748b">{x}</text>
+            <line x1={x} y1="9.5" x2={x} y2="10.5" stroke="#64748b" strokeWidth="0.1" />
+            <text x={x} y="13" fontSize="1.5" textAnchor="middle" fill="#64748b">{x}</text>
           </g>
         ))}
-        <circle cx={dot1} cy="25" r="1" fill="#3b82f6" />
-        <circle cx={dot2} cy="25" r="1" fill="#3b82f6" />
-        <circle cx={dot3} cy="25" r="1" fill="#3b82f6" />
-        <circle cx={dot4} cy="25" r="1" fill="#3b82f6" />
+        <circle cx={dot1} cy="8.5" r="0.4" fill="#3b82f6" />
+        <circle cx={dot2} cy="8.5" r="0.4" fill="#3b82f6" />
+        <circle cx={dot3} cy="8.5" r="0.4" fill="#3b82f6" />
+        <circle cx={dot4} cy="8.5" r="0.4" fill="#3b82f6" />
       </svg>
     ),
     correctValue: `${mean}`,
@@ -795,7 +795,7 @@ export const generateQuestions = (): Question[] => {
     id: 60,
     text: `The box plot below shows the test scores of a math class. What is the median score?`,
     diagram: (
-      <svg width="300" height="100" viewBox="0 0 100 40" className="mx-auto">
+      <svg width="100%" height="160" viewBox="-10 0 120 45" className="mx-auto max-w-lg">
         <line x1="0" y1="30" x2="100" y2="30" stroke="#64748b" strokeWidth="0.5" />
         {[0, 20, 40, 60, 80, 100].map(x => (
           <g key={x}>
