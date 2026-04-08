@@ -18,9 +18,9 @@ export const generateQuestions = (): Question[] => {
   const qs: Question[] = [];
 
   // 1. Ratios
-  const r1 = getRandomInt(2, 5);
-  const r2 = getRandomInt(3, 7);
-  const mult = getRandomInt(3, 8);
+  const r1 = getRandomInt(2, 8);
+  const r2 = getRandomInt(3, 12);
+  const mult = getRandomInt(3, 15);
   const flour = r1 * mult;
   const sugar = r2 * mult;
   qs.push({
@@ -49,9 +49,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 2. Expressions (Multi-Select)
-  const a = getRandomInt(2, 6);
-  const b = getRandomInt(2, 8);
-  const c = getRandomInt(1, 5);
+  const a = getRandomInt(2, 12);
+  const b = getRandomInt(2, 15);
+  const c = getRandomInt(1, 10);
   qs.push({
     id: 2,
     type: 'multi-select',
@@ -67,9 +67,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 3. Integers
-  const i1 = getRandomInt(-10, -2);
-  const i2 = getRandomInt(-10, -2);
-  const i3 = getRandomInt(-10, -2);
+  const i1 = getRandomInt(-20, -2);
+  const i2 = getRandomInt(-20, -2);
+  const i3 = getRandomInt(-20, -2);
   const ans3 = i1 + i2 - i3;
   qs.push({
     id: 3,
@@ -80,7 +80,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 4. Circle Area
-  const radius = getRandomInt(3, 10);
+  const radius = getRandomInt(3, 20);
   const area = (3.14 * radius * radius).toFixed(2);
   qs.push({
     id: 4,
@@ -99,7 +99,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 5. Proportionality
-  const k = parseFloat((getRandomInt(15, 45) / 10).toFixed(1));
+  const k = parseFloat((getRandomInt(15, 85) / 10).toFixed(1));
   qs.push({
     id: 5,
     text: `The table below shows a proportional relationship between x and y. What is the constant of proportionality?`,
@@ -124,8 +124,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 6. Percent Discount
-  const orig = getRandomInt(4, 15) * 10;
-  const disc = getRandomInt(1, 4) * 10;
+  const orig = getRandomInt(4, 30) * 10;
+  const disc = getRandomInt(1, 8) * 10;
   const saved = (orig * disc) / 100;
   const finalPrice = orig - saved;
   qs.push({
@@ -137,9 +137,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 7. Equations
-  const sol7 = getRandomInt(2, 8);
-  const coeff7 = getRandomInt(2, 5);
-  const const7 = getRandomInt(2, 10);
+  const sol7 = getRandomInt(2, 15);
+  const coeff7 = getRandomInt(2, 10);
+  const const7 = getRandomInt(2, 25);
   const res7 = coeff7 * sol7 + const7;
   qs.push({
     id: 7,
@@ -159,8 +159,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 9. Coordinate Plane
-  const x9 = getRandomInt(1, 4);
-  const y9 = getRandomInt(-4, -1);
+  const x9 = getRandomInt(1, 8);
+  const y9 = getRandomInt(-8, -1);
   qs.push({
     id: 9,
     text: `Which point represents the coordinate (${x9}, ${y9}) on a plane?`,
@@ -180,7 +180,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 10. Surface Area Cube
-  const side10 = getRandomInt(2, 6);
+  const side10 = getRandomInt(2, 12);
   const sa10 = 6 * side10 * side10;
   qs.push({
     id: 10,
@@ -191,9 +191,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 11. Probability NOT
-  const red = getRandomInt(2, 5);
-  const blue = getRandomInt(3, 6);
-  const green = getRandomInt(1, 4);
+  const red = getRandomInt(2, 10);
+  const blue = getRandomInt(3, 12);
+  const green = getRandomInt(1, 8);
   const total = red + blue + green;
   qs.push({
     id: 11,
@@ -204,7 +204,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 12. Inequalities
-  const n12 = getRandomInt(10, 30);
+  const n12 = getRandomInt(10, 100);
   qs.push({
     id: 12,
     text: `Which inequality represents 'a number n is at most ${n12}'?`,
@@ -214,9 +214,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 13. Volume
-  const l13 = getRandomInt(3, 8);
-  const w13 = getRandomInt(2, 5);
-  const h13 = getRandomInt(5, 12);
+  const l13 = getRandomInt(3, 15);
+  const w13 = getRandomInt(2, 10);
+  const h13 = getRandomInt(5, 25);
   qs.push({
     id: 13,
     text: `What is the volume of a rectangular prism with length ${l13}, width ${w13}, and height ${h13}?`,
@@ -235,8 +235,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 15. Map Scale
-  const scale = getRandomInt(2, 6) * 10;
-  const dist = (getRandomInt(2, 8) + 0.5);
+  const scale = getRandomInt(2, 12) * 10;
+  const dist = (getRandomInt(2, 15) + 0.5);
   qs.push({
     id: 15,
     text: `A map has a scale of 1 inch = ${scale} miles. If two cities are ${dist} inches apart on the map, how far apart are they in reality?`,
@@ -276,9 +276,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 17. Substitution
-  const x17 = getRandomInt(-5, 5);
-  const a17 = getRandomInt(2, 6);
-  const b17 = getRandomInt(1, 10);
+  const x17 = getRandomInt(-10, 10);
+  const a17 = getRandomInt(2, 12);
+  const b17 = getRandomInt(1, 25);
   qs.push({
     id: 17,
     text: `If x = ${x17}, what is the value of ${a17}x - ${b17}?`,
@@ -297,7 +297,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 19. Median
-  const list19 = [getRandomInt(1, 5), getRandomInt(6, 10), getRandomInt(11, 15), getRandomInt(16, 20), getRandomInt(21, 25)].sort((a, b) => a - b);
+  const list19 = [getRandomInt(1, 10), getRandomInt(11, 20), getRandomInt(21, 30), getRandomInt(31, 40), getRandomInt(41, 50)].sort((a, b) => a - b);
   qs.push({
     id: 19,
     text: `Find the median of the data set: ${[...list19].sort(() => Math.random() - 0.5).join(', ')}`,
@@ -307,8 +307,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 20. Triangle Area
-  const b20 = getRandomInt(4, 12);
-  const h20 = getRandomInt(4, 12);
+  const b20 = getRandomInt(4, 25);
+  const h20 = getRandomInt(4, 25);
   qs.push({
     id: 20,
     text: `A triangle has a base of ${b20} cm and a height of ${h20} cm. What is its area?`,
@@ -318,9 +318,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 21. Simple Interest (Free Response)
-  const principal = getRandomInt(1, 5) * 100;
-  const rate = getRandomInt(2, 6);
-  const time = getRandomInt(2, 5);
+  const principal = getRandomInt(1, 15) * 100;
+  const rate = getRandomInt(2, 12);
+  const time = getRandomInt(2, 10);
   const interest = (principal * rate * time) / 100;
   qs.push({
     id: 21,
@@ -331,8 +331,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 22. Percent Increase/Decrease
-  const oldVal = getRandomInt(4, 10) * 10;
-  const newVal = oldVal + getRandomInt(1, 3) * 10;
+  const oldVal = getRandomInt(4, 25) * 10;
+  const newVal = oldVal + getRandomInt(1, 10) * 10;
   const pctInc = ((newVal - oldVal) / oldVal) * 100;
   qs.push({
     id: 22,
@@ -343,8 +343,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 23. Tax and Total Cost
-  const meal = getRandomInt(20, 50);
-  const tax = getRandomInt(5, 9);
+  const meal = getRandomInt(20, 150);
+  const tax = getRandomInt(5, 15);
   const totalCost = (meal * (1 + tax / 100)).toFixed(2);
   qs.push({
     id: 23,
@@ -355,7 +355,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 24. Circumference
-  const diam = getRandomInt(4, 12);
+  const diam = getRandomInt(4, 30);
   const circ = (3.14 * diam).toFixed(2);
   qs.push({
     id: 24,
@@ -375,7 +375,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 26. Complementary Angles
-  const compAng = getRandomInt(20, 70);
+  const compAng = getRandomInt(10, 80);
   qs.push({
     id: 26,
     text: `Angles A and B are complementary. If Angle A is ${compAng}°, what is the measure of Angle B?`,
@@ -394,8 +394,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 28. Experimental Probability
-  const flips = getRandomInt(40, 60);
-  const heads = getRandomInt(20, 30);
+  const flips = getRandomInt(40, 200);
+  const heads = getRandomInt(15, flips - 5);
   qs.push({
     id: 28,
     text: `A coin is flipped ${flips} times and lands on heads ${heads} times. What is the experimental probability of landing on heads?`,
@@ -405,10 +405,10 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 29. Mean (Dot Plot - Free Response)
-  const dot1 = getRandomInt(1, 3);
-  const dot2 = getRandomInt(4, 6);
-  const dot3 = getRandomInt(7, 9);
-  const dot4 = getRandomInt(10, 12);
+  const dot1 = getRandomInt(1, 5);
+  const dot2 = getRandomInt(6, 10);
+  const dot3 = getRandomInt(11, 15);
+  const dot4 = getRandomInt(16, 20);
   const mean = (dot1 + dot2 + dot3 + dot4) / 4;
   qs.push({
     id: 29,
@@ -434,9 +434,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 30. Factoring Expressions
-  const f1 = getRandomInt(2, 5);
-  const f2 = getRandomInt(2, 5);
-  const f3 = getRandomInt(2, 5);
+  const f1 = getRandomInt(2, 12);
+  const f2 = getRandomInt(2, 12);
+  const f3 = getRandomInt(2, 12);
   const term1 = f1 * f2;
   const term2 = f1 * f3;
   qs.push({
@@ -448,9 +448,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 31. Two-step inequality word problem
-  const costPer = getRandomInt(3, 8);
-  const flatFee = getRandomInt(10, 20);
-  const maxSpend = getRandomInt(40, 60);
+  const costPer = getRandomInt(3, 15);
+  const flatFee = getRandomInt(10, 40);
+  const maxSpend = getRandomInt(50, 200);
   const maxItems = Math.floor((maxSpend - flatFee) / costPer);
   qs.push({
     id: 31,
@@ -461,8 +461,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 32. Complex fraction unit rate
-  const denDist = getRandomInt(2, 4);
-  const denTime = getRandomInt(3, 6);
+  const denDist = getRandomInt(2, 10);
+  const denTime = getRandomInt(3, 15);
   qs.push({
     id: 32,
     text: `A snail crawls 1/${denDist} of a meter in 1/${denTime} of an hour. What is its speed in meters per hour?`,
@@ -486,7 +486,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 33. Proportional Graph
-  const unitY = getRandomInt(3, 8);
+  const unitY = getRandomInt(3, 25);
   qs.push({
     id: 33,
     text: `A graph shows a proportional relationship between hours worked (x) and total pay (y). The line passes through the point (1, ${unitY}). What does this point represent?`,
@@ -496,10 +496,10 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 34. Multiplying negative fractions
-  const n1 = getRandomInt(1, 3);
-  const d1 = getRandomInt(4, 5);
-  const n2 = getRandomInt(1, 3);
-  const d2 = getRandomInt(4, 5);
+  const n1 = getRandomInt(1, 8);
+  const d1 = getRandomInt(9, 15);
+  const n2 = getRandomInt(1, 8);
+  const d2 = getRandomInt(9, 15);
   qs.push({
     id: 34,
     text: `Multiply: (-${n1}/${d1}) × (${n2}/${d2})`,
@@ -509,9 +509,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 35. Distance on coordinate plane
-  const px = getRandomInt(-8, -2);
-  const py = getRandomInt(1, 5);
-  const qx = getRandomInt(2, 8);
+  const px = getRandomInt(-15, -2);
+  const py = getRandomInt(1, 15);
+  const qx = getRandomInt(2, 15);
   qs.push({
     id: 35,
     text: `What is the distance between the points (${px}, ${py}) and (${qx}, ${py}) on a coordinate plane?`,
@@ -521,9 +521,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 36. Area of composite figure
-  const rectL = getRandomInt(5, 10);
-  const rectW = getRandomInt(4, 8);
-  const triH = getRandomInt(3, 6);
+  const rectL = getRandomInt(5, 20);
+  const rectW = getRandomInt(4, 15);
+  const triH = getRandomInt(3, 12);
   const compArea = (rectL * rectW) + (0.5 * rectL * triH);
   qs.push({
     id: 36,
@@ -534,7 +534,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 37. Scale factor effect on area
-  const sf = getRandomInt(2, 4);
+  const sf = getRandomInt(2, 8);
   qs.push({
     id: 37,
     text: `If the dimensions of a rectangle are multiplied by a scale factor of ${sf}, how many times larger will the new area be?`,
@@ -583,8 +583,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 40. Dividing fractions word problem
-  const totalPizzas = getRandomInt(3, 6);
-  const sliceFrac = getRandomInt(4, 8);
+  const totalPizzas = getRandomInt(3, 12);
+  const sliceFrac = getRandomInt(4, 16);
   qs.push({
     id: 40,
     text: `You have ${totalPizzas} pizzas. If each serving is 1/${sliceFrac} of a pizza, how many servings do you have?`,
@@ -595,9 +595,9 @@ export const generateQuestions = (): Question[] => {
 
   {
   // 41. Simple Interest
-  const principal = getRandomInt(5, 20) * 100;
-  const rate = getRandomInt(2, 8);
-  const time = getRandomInt(2, 5);
+  const principal = getRandomInt(5, 50) * 100;
+  const rate = getRandomInt(2, 12);
+  const time = getRandomInt(2, 10);
   const interest = (principal * rate * time) / 100;
   qs.push({
     id: 41,
@@ -608,8 +608,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 42. Percent Error
-  const actual = getRandomInt(40, 100);
-  const estimate = actual + getRandomInt(2, 10) * (Math.random() > 0.5 ? 1 : -1);
+  const actual = getRandomInt(40, 200);
+  const estimate = actual + getRandomInt(2, 25) * (Math.random() > 0.5 ? 1 : -1);
   const error = Math.abs(actual - estimate);
   const percentError = ((error / actual) * 100).toFixed(1);
   qs.push({
@@ -621,10 +621,10 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 43. Unit Rate with Fractions
-  const distFracNum = getRandomInt(1, 3);
-  const distFracDen = getRandomInt(4, 5);
-  const timeFracNum = getRandomInt(1, 2);
-  const timeFracDen = getRandomInt(3, 5);
+  const distFracNum = getRandomInt(1, 8);
+  const distFracDen = getRandomInt(9, 15);
+  const timeFracNum = getRandomInt(1, 5);
+  const timeFracDen = getRandomInt(6, 12);
   const speed = ((distFracNum / distFracDen) / (timeFracNum / timeFracDen)).toFixed(2);
   qs.push({
     id: 43,
@@ -649,9 +649,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 44. Solving Two-Step Inequalities
-  const ineqCoeff = getRandomInt(2, 5);
-  const ineqConst = getRandomInt(3, 12);
-  const ineqTarget = ineqCoeff * getRandomInt(2, 8) + ineqConst;
+  const ineqCoeff = getRandomInt(2, 12);
+  const ineqConst = getRandomInt(3, 30);
+  const ineqTarget = ineqCoeff * getRandomInt(2, 15) + ineqConst;
   const ineqAns = (ineqTarget - ineqConst) / ineqCoeff;
   qs.push({
     id: 44,
@@ -662,9 +662,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 45. Negative Coefficient Inequality
-  const negCoeff = -getRandomInt(2, 5);
-  const negConst = getRandomInt(1, 10);
-  const negTarget = negCoeff * getRandomInt(-5, 5) + negConst;
+  const negCoeff = -getRandomInt(2, 12);
+  const negConst = getRandomInt(1, 30);
+  const negTarget = negCoeff * getRandomInt(-10, 10) + negConst;
   const negAns = (negTarget - negConst) / negCoeff;
   qs.push({
     id: 45,
@@ -675,9 +675,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 46. Factoring Expressions
-  const gcf = getRandomInt(2, 6);
-  const term1 = getRandomInt(2, 5);
-  const term2 = getRandomInt(3, 7);
+  const gcf = getRandomInt(2, 15);
+  const term1 = getRandomInt(2, 12);
+  const term2 = getRandomInt(3, 15);
   qs.push({
     id: 46,
     text: `Factor the expression completely: ${gcf * term1}x + ${gcf * term2}`,
@@ -687,9 +687,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 47. Expanding Expressions
-  const out = getRandomInt(2, 5);
-  const in1 = getRandomInt(2, 6);
-  const in2 = getRandomInt(1, 8);
+  const out = getRandomInt(2, 12);
+  const in1 = getRandomInt(2, 15);
+  const in2 = getRandomInt(1, 20);
   qs.push({
     id: 47,
     text: `Expand the expression: -${out}(${in1}y - ${in2})`,
@@ -699,8 +699,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 48. Distance on a Number Line
-  const ptA = getRandomInt(-15, -5);
-  const ptB = getRandomInt(4, 18);
+  const ptA = getRandomInt(-50, -5);
+  const ptB = getRandomInt(5, 50);
   qs.push({
     id: 48,
     text: `What is the distance between ${ptA} and ${ptB} on a number line?`,
@@ -723,8 +723,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 49. Multiplying Rational Numbers
-  const dec1 = (getRandomInt(-9, -2) / 10).toFixed(1);
-  const dec2 = (getRandomInt(2, 9) / 10).toFixed(1);
+  const dec1 = (getRandomInt(-49, -2) / 10).toFixed(1);
+  const dec2 = (getRandomInt(2, 49) / 10).toFixed(1);
   const prod = (parseFloat(dec1) * parseFloat(dec2)).toFixed(2);
   qs.push({
     id: 49,
@@ -735,8 +735,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 50. Dividing Rational Numbers
-  const numDiv = getRandomInt(-20, -10);
-  const denDiv = getRandomInt(-5, -2);
+  const numDiv = getRandomInt(-100, -10);
+  const denDiv = getRandomInt(-20, -2);
   const divRes = (numDiv / denDiv).toFixed(2);
   qs.push({
     id: 50,
@@ -747,8 +747,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 51. Scale Drawing Area
-  const scaleFactor = getRandomInt(2, 5);
-  const origArea = getRandomInt(10, 30);
+  const scaleFactor = getRandomInt(2, 10);
+  const origArea = getRandomInt(10, 100);
   const newArea = origArea * scaleFactor * scaleFactor;
   qs.push({
     id: 51,
@@ -771,8 +771,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 52. Triangle Inequality Theorem
-  const side1 = getRandomInt(4, 8);
-  const side2 = getRandomInt(5, 9);
+  const side1 = getRandomInt(4, 25);
+  const side2 = getRandomInt(5, 30);
   const validSide = getRandomInt(Math.abs(side1 - side2) + 1, side1 + side2 - 1);
   const invalidSide = side1 + side2 + getRandomInt(1, 4);
   qs.push({
@@ -793,9 +793,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 54. Volume of a Triangular Prism
-  const baseTri = getRandomInt(4, 10);
-  const heightTri = getRandomInt(3, 8);
-  const lengthPrism = getRandomInt(5, 12);
+  const baseTri = getRandomInt(4, 25);
+  const heightTri = getRandomInt(3, 20);
+  const lengthPrism = getRandomInt(5, 30);
   const volTriPrism = (0.5 * baseTri * heightTri) * lengthPrism;
   qs.push({
     id: 54,
@@ -819,7 +819,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 55. Surface Area of a Cube
-  const edge = getRandomInt(3, 9);
+  const edge = getRandomInt(3, 25);
   const saCube = 6 * edge * edge;
   qs.push({
     id: 55,
@@ -830,8 +830,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 56. Experimental Probability
-  const trials = getRandomInt(40, 60);
-  const successes = getRandomInt(10, 25);
+  const trials = getRandomInt(40, 250);
+  const successes = getRandomInt(5, Math.floor(trials / 2));
   const expProb = ((successes / trials) * 100).toFixed(1);
   qs.push({
     id: 56,
@@ -862,8 +862,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 58. Independent Events
-  const marblesRed = getRandomInt(3, 6);
-  const marblesBlue = getRandomInt(4, 7);
+  const marblesRed = getRandomInt(3, 15);
+  const marblesBlue = getRandomInt(4, 20);
   const totalMarbles = marblesRed + marblesBlue;
   qs.push({
     id: 58,
@@ -874,20 +874,23 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 59. Dependent Events
+  const marblesRed59 = getRandomInt(3, 15);
+  const marblesBlue59 = getRandomInt(4, 20);
+  const totalMarbles59 = marblesRed59 + marblesBlue59;
   qs.push({
     id: 59,
-    text: `A bag contains ${marblesRed} red marbles and ${marblesBlue} blue marbles. You draw one, DO NOT replace it, and draw another. What is the probability of drawing two red marbles?`,
-    options: [`${marblesRed * (marblesRed - 1)}/${totalMarbles * (totalMarbles - 1)}`, `${marblesRed * marblesRed}/${totalMarbles * totalMarbles}`, `${marblesRed}/${totalMarbles}`, `${(marblesRed - 1)}/${(totalMarbles - 1)}`],
+    text: `A bag contains ${marblesRed59} red marbles and ${marblesBlue59} blue marbles. You draw one, DO NOT replace it, and draw another. What is the probability of drawing two red marbles?`,
+    options: [`${marblesRed59 * (marblesRed59 - 1)}/${totalMarbles59 * (totalMarbles59 - 1)}`, `${marblesRed59 * marblesRed59}/${totalMarbles59 * totalMarbles59}`, `${marblesRed59}/${totalMarbles59}`, `${(marblesRed59 - 1)}/${(totalMarbles59 - 1)}`],
     correctAnswer: 0,
-    explanation: `P(1st Red) = ${marblesRed}/${totalMarbles}. P(2nd Red | 1st was Red) = ${marblesRed - 1}/${totalMarbles - 1}. Multiply them: ${marblesRed * (marblesRed - 1)}/${totalMarbles * (totalMarbles - 1)}.`
+    explanation: `P(1st Red) = ${marblesRed59}/${totalMarbles59}. P(2nd Red | 1st was Red) = ${marblesRed59 - 1}/${totalMarbles59 - 1}. Multiply them: ${marblesRed59 * (marblesRed59 - 1)}/${totalMarbles59 * (totalMarbles59 - 1)}.`
   });
 
   // 60. Box Plot (Multiple Choice)
-  const min = getRandomInt(10, 20);
-  const q1 = min + getRandomInt(5, 10);
-  const median = q1 + getRandomInt(5, 10);
-  const q3 = median + getRandomInt(5, 10);
-  const max = q3 + getRandomInt(5, 10);
+  const min = getRandomInt(10, 40);
+  const q1 = min + getRandomInt(5, 15);
+  const median = q1 + getRandomInt(5, 15);
+  const q3 = median + getRandomInt(5, 15);
+  const max = q3 + getRandomInt(5, 15);
   qs.push({
     id: 60,
     text: `The box plot below shows the test scores of a math class. What is the median score?`,
@@ -923,9 +926,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 62. Tax and Tip
-  const mealCost = getRandomInt(20, 60);
-  const taxRate = getRandomInt(5, 9);
-  const tipRate = getRandomInt(15, 20);
+  const mealCost = getRandomInt(20, 150);
+  const taxRate = getRandomInt(5, 12);
+  const tipRate = getRandomInt(15, 25);
   const taxAmt = mealCost * (taxRate / 100);
   const tipAmt = mealCost * (tipRate / 100);
   const totalMeal = (mealCost + taxAmt + tipAmt).toFixed(2);
@@ -938,8 +941,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 63. Commission
-  const sales = getRandomInt(10, 50) * 100;
-  const commRate = getRandomInt(3, 8);
+  const sales = getRandomInt(10, 100) * 100;
+  const commRate = getRandomInt(3, 15);
   const commission = (sales * commRate) / 100;
   qs.push({
     id: 63,
@@ -950,20 +953,20 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 64. Percent Increase
-  const oldVal = getRandomInt(40, 80);
-  const newVal = oldVal + getRandomInt(10, 30);
-  const pctInc = (((newVal - oldVal) / oldVal) * 100).toFixed(1);
+  const oldVal64 = getRandomInt(40, 150);
+  const newVal64 = oldVal64 + getRandomInt(10, 50);
+  const pctInc64 = (((newVal64 - oldVal64) / oldVal64) * 100).toFixed(1);
   qs.push({
     id: 64,
-    text: `A store bought a jacket for $${oldVal} and marked it up to $${newVal}. What was the percent increase (markup)?`,
-    options: [`${pctInc}%`, `${(((newVal - oldVal) / newVal) * 100).toFixed(1)}%`, `${(newVal - oldVal)}%`, `${(parseFloat(pctInc) * 2).toFixed(1)}%`],
+    text: `A store bought a jacket for $${oldVal64} and marked it up to $${newVal64}. What was the percent increase (markup)?`,
+    options: [`${pctInc64}%`, `${(((newVal64 - oldVal64) / newVal64) * 100).toFixed(1)}%`, `${(newVal64 - oldVal64)}%`, `${(parseFloat(pctInc64) * 2).toFixed(1)}%`],
     correctAnswer: 0,
-    explanation: `Percent Increase = (Amount of Increase / Original) × 100 = (${newVal - oldVal} / ${oldVal}) × 100 ≈ ${pctInc}%.`
+    explanation: `Percent Increase = (Amount of Increase / Original) × 100 = (${newVal64 - oldVal64} / ${oldVal64}) × 100 ≈ ${pctInc64}%.`
   });
 
   // 65. Percent Decrease
-  const startPop = getRandomInt(500, 1000);
-  const endPop = startPop - getRandomInt(50, 200);
+  const startPop = getRandomInt(500, 2000);
+  const endPop = startPop - getRandomInt(50, 400);
   const pctDec = (((startPop - endPop) / startPop) * 100).toFixed(1);
   qs.push({
     id: 65,
@@ -974,9 +977,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 66. Complex Fractions
-  const cfNum = getRandomInt(1, 3);
-  const cfDen = getRandomInt(4, 5);
-  const cfWhole = getRandomInt(2, 5);
+  const cfNum = getRandomInt(1, 8);
+  const cfDen = getRandomInt(9, 15);
+  const cfWhole = getRandomInt(2, 10);
   const cfRes = ((cfNum / cfDen) / cfWhole).toFixed(3);
   qs.push({
     id: 66,
@@ -987,10 +990,10 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 67. Adding Linear Expressions
-  const le1a = getRandomInt(2, 5);
-  const le1b = getRandomInt(1, 6);
-  const le2a = getRandomInt(3, 7);
-  const le2b = getRandomInt(2, 8);
+  const le1a = getRandomInt(2, 12);
+  const le1b = getRandomInt(1, 15);
+  const le2a = getRandomInt(3, 15);
+  const le2b = getRandomInt(2, 20);
   qs.push({
     id: 67,
     text: `Add the expressions: (${le1a}x + ${le1b}) + (${le2a}x - ${le2b})`,
@@ -1009,17 +1012,17 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 69. Angle Relationships (Complementary)
-  const compAngle = getRandomInt(20, 70);
+  const compAngle69 = getRandomInt(10, 80);
   qs.push({
     id: 69,
-    text: `Two angles are complementary. If one angle measures ${compAngle}°, what is the measure of the other angle?`,
-    options: [`${90 - compAngle}°`, `${180 - compAngle}°`, `${compAngle}°`, `${90 + compAngle}°`],
+    text: `Two angles are complementary. If one angle measures ${compAngle69}°, what is the measure of the other angle?`,
+    options: [`${90 - compAngle69}°`, `${180 - compAngle69}°`, `${compAngle69}°`, `${90 + compAngle69}°`],
     correctAnswer: 0,
-    explanation: `Complementary angles add up to 90°. 90° - ${compAngle}° = ${90 - compAngle}°.`
+    explanation: `Complementary angles add up to 90°. 90° - ${compAngle69}° = ${90 - compAngle69}°.`
   });
 
   // 70. Angle Relationships (Supplementary)
-  const suppAngle = getRandomInt(40, 140);
+  const suppAngle = getRandomInt(20, 160);
   qs.push({
     id: 70,
     text: `Two angles are supplementary. If one angle measures ${suppAngle}°, what is the measure of the other angle?`,
@@ -1029,7 +1032,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 71. Vertical Angles
-  const vertAngle = getRandomInt(30, 150);
+  const vertAngle = getRandomInt(10, 170);
   qs.push({
     id: 71,
     text: `Angles A and B are vertical angles. If Angle A measures ${vertAngle}°, what is the measure of Angle B?`,
@@ -1039,7 +1042,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 72. Circumference of a Circle
-  const circRadius = getRandomInt(4, 12);
+  const circRadius = getRandomInt(4, 30);
   const circumference = (2 * 3.14 * circRadius).toFixed(2);
   qs.push({
     id: 72,
@@ -1050,7 +1053,7 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 73. Area of a Semicircle
-  const semiRadius = getRandomInt(4, 10);
+  const semiRadius = getRandomInt(4, 25);
   const semiArea = (0.5 * 3.14 * semiRadius * semiRadius).toFixed(2);
   qs.push({
     id: 73,
@@ -1061,9 +1064,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 74. Volume of a Rectangular Prism
-  const lPrism = getRandomInt(3, 8);
-  const wPrism = getRandomInt(2, 6);
-  const hPrism = getRandomInt(4, 10);
+  const lPrism = getRandomInt(3, 15);
+  const wPrism = getRandomInt(2, 12);
+  const hPrism = getRandomInt(4, 20);
   qs.push({
     id: 74,
     text: `Find the volume of a rectangular prism with length ${lPrism} cm, width ${wPrism} cm, and height ${hPrism} cm.`,
@@ -1086,18 +1089,21 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 75. Surface Area of a Rectangular Prism
-  const saRectPrism = 2 * (lPrism * wPrism + wPrism * hPrism + lPrism * hPrism);
+  const lPrism75 = getRandomInt(3, 15);
+  const wPrism75 = getRandomInt(2, 12);
+  const hPrism75 = getRandomInt(4, 20);
+  const saRectPrism = 2 * (lPrism75 * wPrism75 + wPrism75 * hPrism75 + lPrism75 * hPrism75);
   qs.push({
     id: 75,
-    text: `Find the surface area of a rectangular prism with length ${lPrism} cm, width ${wPrism} cm, and height ${hPrism} cm.`,
-    options: [`${saRectPrism} cm²`, `${lPrism * wPrism * hPrism} cm²`, `${saRectPrism / 2} cm²`, `${lPrism + wPrism + hPrism} cm²`],
+    text: `Find the surface area of a rectangular prism with length ${lPrism75} cm, width ${wPrism75} cm, and height ${hPrism75} cm.`,
+    options: [`${saRectPrism} cm²`, `${lPrism75 * wPrism75 * hPrism75} cm²`, `${saRectPrism / 2} cm²`, `${lPrism75 + wPrism75 + hPrism75} cm²`],
     correctAnswer: 0,
-    explanation: `Surface Area = 2(lw + wh + lh) = 2(${lPrism}×${wPrism} + ${wPrism}×${hPrism} + ${lPrism}×${hPrism}) = 2(${lPrism * wPrism} + ${wPrism * hPrism} + ${lPrism * hPrism}) = ${saRectPrism}.`
+    explanation: `Surface Area = 2(lw + wh + lh) = 2(${lPrism75}×${wPrism75} + ${wPrism75}×${hPrism75} + ${lPrism75}×${hPrism75}) = 2(${lPrism75 * wPrism75} + ${wPrism75 * hPrism75} + ${lPrism75 * hPrism75}) = ${saRectPrism}.`
   });
 
   // 76. Probability of Not an Event
-  const probA = getRandomInt(1, 4);
-  const probB = getRandomInt(5, 9);
+  const probA = getRandomInt(1, 8);
+  const probB = getRandomInt(9, 20);
   qs.push({
     id: 76,
     text: `If the probability of an event happening is ${probA}/${probB}, what is the probability of the event NOT happening?`,
@@ -1107,9 +1113,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 77. Tree Diagram / Sample Space
-  const shirts = getRandomInt(3, 5);
-  const pants = getRandomInt(2, 4);
-  const shoes = getRandomInt(2, 3);
+  const shirts = getRandomInt(3, 10);
+  const pants = getRandomInt(2, 8);
+  const shoes = getRandomInt(2, 6);
   qs.push({
     id: 77,
     text: `You are choosing an outfit. You have ${shirts} shirts, ${pants} pairs of pants, and ${shoes} pairs of shoes. How many different outfit combinations are possible?`,
@@ -1119,9 +1125,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 78. Multi-Step Word Problem (Money)
-  const allowance = getRandomInt(20, 50);
-  const spentFrac = getRandomInt(2, 4);
-  const earnedExtra = getRandomInt(5, 15);
+  const allowance = getRandomInt(20, 100);
+  const spentFrac = getRandomInt(2, 5);
+  const earnedExtra = getRandomInt(5, 30);
   const finalMoney = (allowance - (allowance / spentFrac) + earnedExtra).toFixed(2);
   qs.push({
     id: 78,
@@ -1132,9 +1138,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 79. Similar Figures
-  const simSide1 = getRandomInt(3, 6);
-  const simSide2 = getRandomInt(7, 12);
-  const simScale = getRandomInt(2, 4);
+  const simSide1 = getRandomInt(3, 12);
+  const simSide2 = getRandomInt(7, 25);
+  const simScale = getRandomInt(2, 6);
   qs.push({
     id: 79,
     text: `Two triangles are similar. A side on the smaller triangle is ${simSide1} cm, and the corresponding side on the larger triangle is ${simSide1 * simScale} cm. If another side on the smaller triangle is ${simSide2} cm, what is the corresponding side on the larger triangle?`,
@@ -1157,9 +1163,9 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 80. Constant Speed Word Problem
-  const speedDist = getRandomInt(120, 300);
-  const speedTime = getRandomInt(2, 5);
-  const newTime = getRandomInt(6, 9);
+  const speedDist = getRandomInt(120, 600);
+  const speedTime = getRandomInt(2, 10);
+  const newTime = getRandomInt(11, 20);
   const speedRate = speedDist / speedTime;
   qs.push({
     id: 80,
