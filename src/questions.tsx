@@ -10,6 +10,8 @@ export interface Question {
   correctValue?: string;
   explanation: string;
   diagram?: React.ReactNode;
+  category?: string;
+  subCategory?: string;
 }
 
 const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;

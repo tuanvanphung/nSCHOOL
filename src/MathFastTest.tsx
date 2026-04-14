@@ -465,15 +465,9 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                       handleRegenerate();
                       handleStartTest();
                     }}
-                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-all"
+                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-all w-full sm:w-auto"
                   >
-                    <RotateCcw className="w-4 h-4" /> New Test
-                  </button>
-                  <button
-                    onClick={handleStartTest}
-                    className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-8 rounded-xl transition-all"
-                  >
-                    <RotateCcw className="w-4 h-4" /> Retake Same Test
+                    <RotateCcw className="w-4 h-4" /> Start New Test
                   </button>
                 </div>
               </div>

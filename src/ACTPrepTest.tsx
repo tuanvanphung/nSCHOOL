@@ -96,6 +96,13 @@ export default function ACTPrepTest({ onBack }: { onBack: () => void }) {
                 ${idx + 1}. ${q.text}
                 ${isUnanswered ? '<span class="ml-2 text-[10px] uppercase tracking-wider font-bold text-red-500 bg-red-50 px-2 py-1 rounded-md border border-red-100">Unanswered</span>' : ''}
               </p>
+              ${q.category && q.subCategory ? `
+              <div class="mb-3 flex items-center gap-2">
+                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] uppercase tracking-wider font-bold rounded-md border border-slate-200">${q.category}</span>
+                <span class="text-slate-300 text-xs">→</span>
+                <span class="px-2 py-0.5 bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider font-bold rounded-md border border-slate-100">${q.subCategory}</span>
+              </div>
+              ` : ''}
               
               ${q.diagram ? `<div class="mb-4 p-3 bg-slate-50 rounded-xl border border-slate-100 inline-block">${renderToString(q.diagram as any)}</div>` : ''}
 
@@ -364,15 +371,9 @@ export default function ACTPrepTest({ onBack }: { onBack: () => void }) {
                       handleRegenerate();
                       handleStartTest();
                     }}
-                    className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-xl transition-all"
+                    className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-xl transition-all w-full sm:w-auto"
                   >
-                    <RotateCcw className="w-4 h-4" /> New Test
-                  </button>
-                  <button
-                    onClick={handleStartTest}
-                    className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-8 rounded-xl transition-all"
-                  >
-                    <RotateCcw className="w-4 h-4" /> Retake Same Test
+                    <RotateCcw className="w-4 h-4" /> Start New Test
                   </button>
                 </div>
               </div>
@@ -406,6 +407,14 @@ export default function ACTPrepTest({ onBack }: { onBack: () => void }) {
                             {idx + 1}. {q.text}
                             {isUnanswered && <span className="ml-2 text-[10px] uppercase tracking-wider font-bold text-red-500 bg-red-50 px-2 py-1 rounded-md border border-red-100">Unanswered</span>}
                           </p>
+
+                          {q.category && q.subCategory && (
+                            <div className="mb-3 flex items-center gap-2">
+                              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] uppercase tracking-wider font-bold rounded-md border border-slate-200">{q.category}</span>
+                              <span className="text-slate-300 text-xs">→</span>
+                              <span className="px-2 py-0.5 bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider font-bold rounded-md border border-slate-100">{q.subCategory}</span>
+                            </div>
+                          )}
                           
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
                             {q.options?.map((opt, oIdx) => (
