@@ -7,16 +7,11 @@ import {
   RotateCcw, 
   Trophy, 
   Brain,
-  Timer,
   BarChart3,
   BookOpen,
   Send,
   RefreshCw,
   ArrowLeft,
-  Flag,
-  Menu,
-  ChevronLeft,
-  ChevronRight,
   X,
   FileText
 } from 'lucide-react';
@@ -77,7 +72,9 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
       const sortedCorrect = [...(q.correctAnswers || [])].sort();
       return sortedUser.length === sortedCorrect.length && sortedUser.every((val, index) => val === sortedCorrect[index]);
     } else if (q.type === 'free-response') {
-      return String(userAnswer).trim().toLowerCase() === String(q.correctValue).trim().toLowerCase();
+      const u = String(userAnswer).trim().toLowerCase().replace(/\s+/g, '');
+      const c = String(q.correctValue).trim().toLowerCase().replace(/\s+/g, '');
+      return u === c;
     } else {
       return userAnswer === q.correctAnswer;
     }
@@ -444,7 +441,7 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                 <h2 className="text-3xl font-bold mb-1">Test Results</h2>
                 <p className="text-slate-500 mb-6">Review your performance below</p>
 
-                <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="text-3xl font-black text-blue-600">
                       {Math.round((score / questions.length) * 100)}%
@@ -456,6 +453,12 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                       {score}/{questions.length}
                     </div>
                     <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Correct</div>
+                  </div>
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 col-span-2 md:col-span-1">
+                    <div className="text-3xl font-bold text-slate-800">
+                      {startTime ? formatTime(Date.now() - startTime) : '--'}
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Time Taken</div>
                   </div>
                 </div>
 
@@ -590,99 +593,100 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
               </div>
             </motion.div>
           )}
-          {/* Reference Sheet Modal */}
-          <AnimatePresence>
-            {showReferenceSheet && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
-                onClick={() => setShowReferenceSheet(false)}
-              >
-                <motion.div
-                  initial={{ scale: 0.95, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.95, opacity: 0 }}
-                  onClick={e => e.stopPropagation()}
-                  className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-                >
-                  <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center z-10">
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                      <FileText className="w-6 h-6 text-blue-600" />
-                      Grade 7 FAST Mathematics Reference Sheet
-                    </h2>
-                    <button onClick={() => setShowReferenceSheet(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
-                      <X className="w-6 h-6" />
-                    </button>
-                  </div>
-                  <div className="p-6 space-y-8 text-slate-700">
-                    <div>
-                      <h3 className="font-bold text-lg mb-3 border-b pb-2">Conversions</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                        <p>1 foot = 12 inches</p>
-                        <p>1 cup = 8 fluid ounces</p>
-                        <p>1 yard = 3 feet</p>
-                        <p>1 pint = 2 cups</p>
-                        <p>1 mile = 5,280 feet</p>
-                        <p>1 quart = 2 pints</p>
-                        <p>1 mile = 1,760 yards</p>
-                        <p>1 gallon = 4 quarts</p>
-                        <p>1 meter = 100 centimeters</p>
-                        <p>1 pound = 16 ounces</p>
-                        <p>1 meter = 1000 millimeters</p>
-                        <p>1 ton = 2,000 pounds</p>
-                        <p>1 kilometer = 1000 meters</p>
-                        <p>1 gram = 1000 milligrams</p>
-                        <p>1 liter = 1000 milliliters</p>
-                        <p>1 kilogram = 1000 grams</p>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-bold text-lg mb-3 border-b pb-2">Area Formulas</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="font-semibold">Triangle</p>
-                          <p>A = ½bh</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Rectangle</p>
-                          <p>A = lw</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Parallelogram</p>
-                          <p>A = bh</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Trapezoid</p>
-                          <p>A = ½h(b₁ + b₂)</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Circle</p>
-                          <p>A = πr²</p>
-                        </div>
-                      </div>
-                    </div>
+        </AnimatePresence>
 
-                    <div>
-                      <h3 className="font-bold text-lg mb-3 border-b pb-2">Circumference & Volume</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="font-semibold">Circumference of a Circle</p>
-                          <p>C = πd  or  C = 2πr</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">Volume of a Prism</p>
-                          <p>V = Bh</p>
-                        </div>
+        {/* Reference Sheet Modal */}
+        <AnimatePresence>
+          {showReferenceSheet && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+              onClick={() => setShowReferenceSheet(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                onClick={e => e.stopPropagation()}
+                className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              >
+                <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center z-10">
+                  <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <FileText className="w-6 h-6 text-blue-600" />
+                    Grade 7 FAST Mathematics Reference Sheet
+                  </h2>
+                  <button onClick={() => setShowReferenceSheet(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <div className="p-6 space-y-8 text-slate-700">
+                  <div>
+                    <h3 className="font-bold text-lg mb-3 border-b pb-2">Conversions</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                      <p>1 foot = 12 inches</p>
+                      <p>1 cup = 8 fluid ounces</p>
+                      <p>1 yard = 3 feet</p>
+                      <p>1 pint = 2 cups</p>
+                      <p>1 mile = 5,280 feet</p>
+                      <p>1 quart = 2 pints</p>
+                      <p>1 mile = 1,760 yards</p>
+                      <p>1 gallon = 4 quarts</p>
+                      <p>1 meter = 100 centimeters</p>
+                      <p>1 pound = 16 ounces</p>
+                      <p>1 meter = 1000 millimeters</p>
+                      <p>1 ton = 2,000 pounds</p>
+                      <p>1 kilometer = 1000 meters</p>
+                      <p>1 gram = 1000 milligrams</p>
+                      <p>1 liter = 1000 milliliters</p>
+                      <p>1 kilogram = 1000 grams</p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-bold text-lg mb-3 border-b pb-2">Area Formulas</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="font-semibold">Triangle</p>
+                        <p>A = ½bh</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Rectangle</p>
+                        <p>A = lw</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Parallelogram</p>
+                        <p>A = bh</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Trapezoid</p>
+                        <p>A = ½h(b₁ + b₂)</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Circle</p>
+                        <p>A = πr²</p>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+
+                  <div>
+                    <h3 className="font-bold text-lg mb-3 border-b pb-2">Circumference & Volume</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="font-semibold">Circumference of a Circle</p>
+                        <p>C = πd  or  C = 2πr</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Volume of a Prism</p>
+                        <p>V = Bh</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
-            )}
-          </AnimatePresence>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </div>

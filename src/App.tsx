@@ -47,7 +47,7 @@ export default function App() {
               <GraduationCap className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
             </div>
             <h2 className="text-xl font-bold mb-2">ACT Math Prep</h2>
-            <p className="text-slate-500 mb-6 flex-1">Dynamic 63-question practice test modeled after the last 5 years of ACT exams. Covers Algebra, Geometry, and Trig.</p>
+            <p className="text-slate-500 mb-6 flex-1">Dynamic 120-question practice test modeled after the last 5 years of ACT exams. Covers Algebra, Geometry, and Trig.</p>
             <div className="flex items-center text-red-600 font-semibold text-sm">
               Launch Project <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
             </div>
