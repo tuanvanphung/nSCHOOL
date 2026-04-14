@@ -17,6 +17,88 @@ export interface Question {
 
 const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
+const gcd = (a: number, b: number): number => {
+  return b === 0 ? Math.abs(a) : gcd(b, a % b);
+};
+
+const simplifyFraction = (num: number, den: number): string => {
+  const common = gcd(num, den);
+  const n = num / common;
+  const d = den / common;
+  return d === 1 ? `${n}` : `${n}/${d}`;
+};
+
+const formatPercent = (value: number, decimals = 1): string => {
+  return `${parseFloat(value.toFixed(decimals))}%`;
+};
+
+const ensureUniqueOptions = (options: string[], correctIndex: number): string[] => {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  
+  options.forEach((opt, i) => {
+    let currentOpt = opt;
+    let attempt = 1;
+    while (seen.has(currentOpt)) {
+      if (i === correctIndex) {
+        // Should not happen if logic is correct, but for safety:
+        // If correct answer is a duplicate, we must change the OTHER one.
+        // But here we just append a space or something to distractors.
+        currentOpt = opt + " "; 
+      } else {
+        // Distractor is duplicate, modify it
+        if (opt.includes('$')) {
+          const val = parseFloat(opt.replace('$', ''));
+          currentOpt = `$${(val + attempt).toFixed(opt.includes('.') ? 2 : 0)}`;
+        } else if (opt.includes('%')) {
+          const val = parseFloat(opt.replace('%', ''));
+          currentOpt = `${(val + attempt).toFixed(1)}%`;
+        } else if (opt.includes('/')) {
+          const parts = opt.split('/');
+          currentOpt = `${parseInt(parts[0]) + attempt}/${parts[1]}`;
+        } else if (!isNaN(parseFloat(opt))) {
+          currentOpt = `${parseFloat(opt) + attempt}`;
+        } else {
+          currentOpt = opt + ` (${attempt})`;
+        }
+      }
+      attempt++;
+    }
+    result.push(currentOpt);
+    seen.add(currentOpt);
+  });
+  
+  return result;
+};
+
+/** Ensure term1 and term2 are coprime for clean factoring questions */
+const getCoprimeInts = (min1: number, max1: number, min2: number, max2: number): [number, number] => {
+  let a: number, b: number;
+  do {
+    a = getRandomInt(min1, max1);
+    b = getRandomInt(min2, max2);
+  } while (gcd(a, b) !== 1);
+  return [a, b];
+};
+
+/** Ensure dividend is divisible by divisor for clean money problems */
+const getDivisibleInt = (min: number, max: number, divisor: number): number => {
+  const candidates = [];
+  for (let i = min; i <= max; i++) {
+    if (i % divisor === 0) candidates.push(i);
+  }
+  return candidates[Math.floor(Math.random() * candidates.length)];
+};
+
+/** Generate a unique SVG marker ID */
+let markerCounter = 0;
+const getMarkerId = (prefix = 'arrow') => `${prefix}-${++markerCounter}`;
+
+/** Constrain a value to fit within an SVG viewBox range */
+const constrainToViewBox = (min: number, max: number, padding = 2): [number, number] => {
+  return [min + padding, max - padding];
+};
+
 export const generateQuestions = (): Question[] => {
   const qs: Question[] = [];
 
@@ -162,8 +244,8 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 9. Coordinate Plane
-  const x9 = getRandomInt(1, 8);
-  const y9 = getRandomInt(-8, -1);
+  const x9 = getRandomInt(-4, 4);
+  const y9 = getRandomInt(-4, 4);
   qs.push({
     id: 9,
     text: `Which point represents the coordinate (${x9}, ${y9}) on a plane?`,
@@ -179,7 +261,7 @@ export const generateQuestions = (): Question[] => {
     ),
     options: ["Point A", "Point B", "Point C", "Point D"],
     correctAnswer: 0, // Adjusted to match diagram logic
-    explanation: `The point (${x9}, ${y9}) is ${x9} units right and ${Math.abs(y9)} units down.`
+    explanation: `The point (${x9}, ${y9}) is ${x9} units ${x9 >= 0 ? 'right' : 'left'} and ${Math.abs(y9)} units ${y9 >= 0 ? 'up' : 'down'}.`
   });
 
   // 10. Surface Area Cube
@@ -330,7 +412,7 @@ export const generateQuestions = (): Question[] => {
     type: 'free-response',
     text: `You deposit $${principal} in an account earning ${rate}% simple interest annually. How much interest will you earn in ${time} years? (Enter just the number)`,
     correctValue: `${interest}`,
-    explanation: `Simple Interest = Principal × Rate × Time = ${principal} × 0.0${rate} × ${time} = ${interest}.`
+    explanation: `Simple Interest = Principal × Rate × Time = ${principal} × ${rate / 100} × ${time} = ${interest}.`
   });
 
   // 22. Percent Increase/Decrease
@@ -340,9 +422,9 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 22,
     text: `A store buys a jacket for $${oldVal} and sells it for $${newVal}. What is the percent markup?`,
-    options: [`${pctInc}%`, `${pctInc + 10}%`, `${pctInc / 2}%`, `${oldVal}%`],
+    options: ensureUniqueOptions([`${formatPercent(pctInc)}`, `${formatPercent(pctInc + 10)}`, `${formatPercent(pctInc / 2)}`, `${oldVal}%`], 0),
     correctAnswer: 0,
-    explanation: `Markup = ${newVal} - ${oldVal} = ${newVal - oldVal}. Percent = (${newVal - oldVal} / ${oldVal}) × 100 = ${pctInc}%.`
+    explanation: `Markup = ${newVal} - ${oldVal} = ${newVal - oldVal}. Percent = (${newVal - oldVal} / ${oldVal}) × 100 = ${formatPercent(pctInc)}.`
   });
 
   // 23. Tax and Total Cost
@@ -352,9 +434,9 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 23,
     text: `Your meal costs $${meal}. If the sales tax is ${tax}%, what is the total cost of the meal?`,
-    options: [`$${totalCost}`, `$${(meal + tax).toFixed(2)}`, `$${(meal * (tax / 100)).toFixed(2)}`, `$${(meal * 1.1).toFixed(2)}`],
+    options: ensureUniqueOptions([`$${totalCost}`, `$${(meal + tax).toFixed(2)}`, `$${(meal * (tax / 100)).toFixed(2)}`, `$${(meal * 1.1).toFixed(2)}`], 0),
     correctAnswer: 0,
-    explanation: `Tax = ${meal} × 0.0${tax} = ${(meal * (tax / 100)).toFixed(2)}. Total = ${meal} + ${(meal * (tax / 100)).toFixed(2)} = ${totalCost}.`
+    explanation: `Tax = ${meal} × ${tax / 100} = ${(meal * (tax / 100)).toFixed(2)}. Total = ${meal} + ${(meal * (tax / 100)).toFixed(2)} = ${totalCost}.`
   });
 
   // 24. Circumference
@@ -410,8 +492,8 @@ export const generateQuestions = (): Question[] => {
   // 29. Mean (Dot Plot - Free Response)
   const dot1 = getRandomInt(1, 5);
   const dot2 = getRandomInt(6, 10);
-  const dot3 = getRandomInt(11, 15);
-  const dot4 = getRandomInt(16, 20);
+  const dot3 = getRandomInt(11, 14);
+  const dot4 = getRandomInt(11, 14);
   const mean = (dot1 + dot2 + dot3 + dot4) / 4;
   qs.push({
     id: 29,
@@ -429,7 +511,7 @@ export const generateQuestions = (): Question[] => {
         <circle cx={dot1} cy="8.5" r="0.4" fill="#3b82f6" />
         <circle cx={dot2} cy="8.5" r="0.4" fill="#3b82f6" />
         <circle cx={dot3} cy="8.5" r="0.4" fill="#3b82f6" />
-        <circle cx={dot4} cy="8.5" r="0.4" fill="#3b82f6" />
+        <circle cx={dot4} cy="7.5" r="0.4" fill="#3b82f6" />
       </svg>
     ),
     correctValue: `${mean}`,
@@ -437,17 +519,20 @@ export const generateQuestions = (): Question[] => {
   });
 
   // 30. Factoring Expressions
-  const f1 = getRandomInt(2, 12);
+  const f1_base = getRandomInt(2, 6);
   const f2 = getRandomInt(2, 12);
   const f3 = getRandomInt(2, 12);
-  const term1 = f1 * f2;
-  const term2 = f1 * f3;
+  const term1 = f1_base * f2;
+  const term2 = f1_base * f3;
+  const actualGCF = gcd(term1, term2);
+  const finalF2 = term1 / actualGCF;
+  const finalF3 = term2 / actualGCF;
   qs.push({
     id: 30,
     text: `Factor the expression completely: ${term1}x + ${term2}`,
-    options: [`${f1}(${f2}x + ${f3})`, `${f2}(${f1}x + ${f3})`, `${term1}(x + ${term2})`, `${f1}x(${f2} + ${f3})`],
+    options: ensureUniqueOptions([`${actualGCF}(${finalF2}x + ${finalF3})`, `${f1_base}(${f2}x + ${f3})`, `${term1}(x + ${term2})`, `${actualGCF}x(${finalF2} + ${finalF3})`], 0),
     correctAnswer: 0,
-    explanation: `The greatest common factor of ${term1}x and ${term2} is ${f1}. Factoring it out gives ${f1}(${f2}x + ${f3}).`
+    explanation: `The greatest common factor of ${term1}x and ${term2} is ${actualGCF}. Factoring it out gives ${actualGCF}(${finalF2}x + ${finalF3}).`
   });
 
   // 31. Two-step inequality word problem
@@ -618,7 +703,7 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 42,
     text: `You estimated there were ${estimate} jellybeans in a jar. The actual number was ${actual}. What is the percent error of your estimate? (Round to the nearest tenth if necessary)`,
-    options: [`${percentError}%`, `${((error / estimate) * 100).toFixed(1)}%`, `${error}%`, `${(parseFloat(percentError) * 2).toFixed(1)}%`],
+    options: ensureUniqueOptions([`${percentError}%`, `${((error / estimate) * 100).toFixed(1)}%`, `${error}%`, `${(parseFloat(percentError) * 2).toFixed(1)}%`], 0),
     correctAnswer: 0,
     explanation: `Percent Error = (|Actual - Estimate| / Actual) × 100 = (${error} / ${actual}) × 100 ≈ ${percentError}%.`
   });
@@ -646,7 +731,7 @@ export const generateQuestions = (): Question[] => {
         </defs>
       </svg>
     ),
-    options: [`${speed} m/h`, `${((distFracNum/distFracDen)*(timeFracNum/timeFracDen)).toFixed(2)} m/h`, `${((timeFracNum/timeFracDen)/(distFracNum/distFracDen)).toFixed(2)} m/h`, `1.00 m/h`],
+    options: ensureUniqueOptions([`${speed} m/h`, `${((distFracNum/distFracDen)*(timeFracNum/timeFracDen)).toFixed(2)} m/h`, `${((timeFracNum/timeFracDen)/(distFracNum/distFracDen)).toFixed(2)} m/h`, `1.00 m/h`], 0),
     correctAnswer: 0,
     explanation: `Speed = Distance ÷ Time = (${distFracNum}/${distFracDen}) ÷ (${timeFracNum}/${timeFracDen}) = (${distFracNum}/${distFracDen}) × (${timeFracDen}/${timeFracNum}) ≈ ${speed}.`
   });
@@ -1006,7 +1091,7 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 64,
     text: `A store bought a jacket for $${oldVal64} and marked it up to $${newVal64}. What was the percent increase (markup)?`,
-    options: [`${pctInc64}%`, `${(((newVal64 - oldVal64) / newVal64) * 100).toFixed(1)}%`, `${(newVal64 - oldVal64)}%`, `${(parseFloat(pctInc64) * 2).toFixed(1)}%`],
+    options: ensureUniqueOptions([`${pctInc64}%`, `${(((newVal64 - oldVal64) / newVal64) * 100).toFixed(1)}%`, `${(newVal64 - oldVal64)}%`, `${(parseFloat(pctInc64) * 2).toFixed(1)}%`], 0),
     correctAnswer: 0,
     explanation: `Percent Increase = (Amount of Increase / Original) × 100 = (${newVal64 - oldVal64} / ${oldVal64}) × 100 ≈ ${pctInc64}%.`
   });
@@ -1018,7 +1103,7 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 65,
     text: `A town's population decreased from ${startPop} to ${endPop}. What was the percent decrease?`,
-    options: [`${pctDec}%`, `${(((startPop - endPop) / endPop) * 100).toFixed(1)}%`, `${startPop - endPop}%`, `${(parseFloat(pctDec) / 2).toFixed(1)}%`],
+    options: ensureUniqueOptions([`${pctDec}%`, `${(((startPop - endPop) / endPop) * 100).toFixed(1)}%`, `${startPop - endPop}%`, `${(parseFloat(pctDec) / 2).toFixed(1)}%`], 0),
     correctAnswer: 0,
     explanation: `Percent Decrease = (Amount of Decrease / Original) × 100 = (${startPop - endPop} / ${startPop}) × 100 ≈ ${pctDec}%.`
   });
@@ -1027,13 +1112,14 @@ export const generateQuestions = (): Question[] => {
   const cfNum = getRandomInt(1, 8);
   const cfDen = getRandomInt(9, 15);
   const cfWhole = getRandomInt(2, 10);
-  const cfRes = ((cfNum / cfDen) / cfWhole).toFixed(3);
+  const finalDen = cfDen * cfWhole;
+  const simplified = simplifyFraction(cfNum, finalDen);
   qs.push({
     id: 66,
     text: `Simplify the complex fraction: (${cfNum}/${cfDen}) / ${cfWhole}`,
-    options: [`${cfNum}/${cfDen * cfWhole}`, `${cfNum * cfWhole}/${cfDen}`, `${cfDen}/${cfNum * cfWhole}`, `${cfWhole}/${cfDen}`],
+    options: ensureUniqueOptions([`${simplified}`, `${cfNum * cfWhole}/${cfDen}`, `${cfDen}/${cfNum * cfWhole}`, `${cfWhole}/${cfDen}`], 0),
     correctAnswer: 0,
-    explanation: `(${cfNum}/${cfDen}) ÷ ${cfWhole} = (${cfNum}/${cfDen}) × (1/${cfWhole}) = ${cfNum}/(${cfDen} × ${cfWhole}) = ${cfNum}/${cfDen * cfWhole}.`
+    explanation: `(${cfNum}/${cfDen}) ÷ ${cfWhole} = (${cfNum}/${cfDen}) × (1/${cfWhole}) = ${cfNum}/(${cfDen} × ${cfWhole}) = ${cfNum}/${finalDen} = ${simplified}.`
   });
 
   // 67. Adding Linear Expressions
@@ -1130,7 +1216,7 @@ export const generateQuestions = (): Question[] => {
         <text x="5" y="75" fontSize="12" fill="#0f172a">{hPrism} cm</text>
       </svg>
     ),
-    options: [`${lPrism * wPrism * hPrism} cm³`, `${2 * (lPrism*wPrism + wPrism*hPrism + lPrism*hPrism)} cm³`, `${lPrism + wPrism + hPrism} cm³`, `${(lPrism * wPrism * hPrism) / 2} cm³`],
+    options: ensureUniqueOptions([`${lPrism * wPrism * hPrism} cm³`, `${2 * (lPrism*wPrism + wPrism*hPrism + lPrism*hPrism)} cm³`, `${lPrism + wPrism + hPrism} cm³`, `${(lPrism * wPrism * hPrism) / 2} cm³`], 0),
     correctAnswer: 0,
     explanation: `Volume = length × width × height = ${lPrism} × ${wPrism} × ${hPrism} = ${lPrism * wPrism * hPrism}.`
   });
@@ -1154,7 +1240,7 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 76,
     text: `If the probability of an event happening is ${probA}/${probB}, what is the probability of the event NOT happening?`,
-    options: [`${probB - probA}/${probB}`, `${probA}/${probB}`, `${probB}/${probA}`, `1/${probB}`],
+    options: ensureUniqueOptions([`${probB - probA}/${probB}`, `${probA}/${probB}`, `${probB}/${probA}`, `1/${probB}`], 0),
     correctAnswer: 0,
     explanation: `P(Not Event) = 1 - P(Event) = ${probB}/${probB} - ${probA}/${probB} = ${probB - probA}/${probB}.`
   });
@@ -1179,7 +1265,7 @@ export const generateQuestions = (): Question[] => {
   qs.push({
     id: 78,
     text: `You receive $${allowance} for allowance. You spend 1/${spentFrac} of it on a movie, then earn $${earnedExtra} washing the car. How much money do you have now?`,
-    options: [`$${finalMoney}`, `$${(allowance / spentFrac + earnedExtra).toFixed(2)}`, `$${(allowance - earnedExtra).toFixed(2)}`, `$${(allowance + earnedExtra).toFixed(2)}`],
+    options: ensureUniqueOptions([`$${finalMoney}`, `$${(allowance / spentFrac + earnedExtra).toFixed(2)}`, `$${(allowance - earnedExtra).toFixed(2)}`, `$${(allowance + earnedExtra).toFixed(2)}`], 0),
     correctAnswer: 0,
     explanation: `Spent = $${allowance} × (1/${spentFrac}) = $${allowance / spentFrac}. Remaining = ${allowance} - ${allowance / spentFrac} = $${allowance - (allowance / spentFrac)}. Add earnings: ${allowance - (allowance / spentFrac)} + ${earnedExtra} = $${finalMoney}.`
   });
