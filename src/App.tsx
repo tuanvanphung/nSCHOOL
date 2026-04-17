@@ -31,8 +31,8 @@ export default function App() {
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
               <Calculator className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
             </div>
-            <h2 className="text-xl font-bold mb-2">Grade 7 Math FAST Prep</h2>
-            <p className="text-slate-500 mb-6 flex-1">Dynamic practice test with randomized values. Generates unique 80-question tests covering all Grade 7 standards.</p>
+            <h2 className="text-xl font-bold mb-2">Middle School Math FAST Prep</h2>
+            <p className="text-slate-500 mb-6 flex-1">Dynamic practice test with randomized values. Generates unique 116-question tests covering all Middle School standards.</p>
             <div className="flex items-center text-blue-600 font-semibold text-sm">
               Launch Project <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
             </div>

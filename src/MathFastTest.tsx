@@ -175,13 +175,13 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test Report - Grade 7 Math FAST Prep</title>
+  <title>Test Report - Middle School Math FAST Prep</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 p-8 font-sans">
   <div class="max-w-3xl mx-auto">
     <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center mb-8">
-      <h1 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Grade 7 Math FAST Prep</h1>
+      <h1 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Middle School Math FAST Prep</h1>
       <p class="text-slate-500 font-medium mb-6">Test Report generated on ${now.toLocaleString()}</p>
       
       <div class="inline-flex items-center justify-center w-32 h-32 rounded-full border-8 ${scorePercent >= 70 ? 'border-green-500 text-green-500' : 'border-blue-500 text-blue-500'} mb-4">
@@ -260,7 +260,7 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
               <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Brain className="w-8 h-8 text-blue-600" />
               </div>
-              <h1 className="text-3xl font-bold tracking-tight mb-3">Grade 7 Math FAST Prep</h1>
+              <h1 className="text-3xl font-bold tracking-tight mb-3">Middle School Math FAST Prep</h1>
               <p className="text-slate-600 mb-8 max-w-xl mx-auto">
                 Dynamic practice test with randomized values. Every test is unique!
               </p>
@@ -615,7 +615,7 @@ export default function MathFastTest({ onBack }: { onBack: () => void }) {
                 <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center z-10">
                   <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                     <FileText className="w-6 h-6 text-blue-600" />
-                    Grade 7 FAST Mathematics Reference Sheet
+                    Middle School FAST Mathematics Reference Sheet
                   </h2>
                   <button onClick={() => setShowReferenceSheet(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
                     <X className="w-6 h-6" />

@@ -1,5 +1,46 @@
 import React from 'react';
 
+import { 
+  generateProportionalTable, 
+  generateProportionalGraph, 
+  generateComplexUnitRate, 
+  generateMultiStepPercent, 
+  generateScaleDrawing, 
+  generateVerbalExpression, 
+  generateMultiStepEquation, 
+  generateInequalityGraph, 
+  generateAngleParallelLines, 
+  generateIQR,
+  generateCompositeArea,
+  generateFrequencyTableProb,
+  generateHybridPay,
+  generateRateConversion,
+  generateVolumePyramid
+} from './generators/fastGrade7';
+import { 
+  generateIdentifyFunction, 
+  generateScientificNotation, 
+  generatePythagoreanTheorem, 
+  generateExponentRules, 
+  generateVolumeCylinder, 
+  generateSlopeFromPoints, 
+  generateRationalIrrational,
+  generateVolumeCone,
+  generateVolumeSphere,
+  generateDilation,
+  generateScatterPlotTrend,
+  generatePythagoreanDistance,
+  generateScientificNotationConversion,
+  generateFunctionNotation,
+  generateSystemByGraphing,
+  generateSystemSubstitution,
+  generateTransformations,
+  generateTwoWayTable,
+  generateScientificNotationOperations,
+  generateComparingFunctions,
+  generateSystemWordProblem
+} from './generators/fastGrade8';
+
 export interface Question {
   id: number;
   text: string;
@@ -875,7 +916,7 @@ export const generateQuestions = (): Question[] => {
     ),
     options: [`$${share}`, `$${(totalDebt / (numPeople - 1)).toFixed(2)}`, `$${(totalDebt - numPeople).toFixed(2)}`, `$${(totalDebt * numPeople).toFixed(2)}`],
     correctAnswer: 0,
-    explanation: `Debt is represented as a negative number: -$${totalDebt}. Dividing by ${numPeople} people: -${totalDebt} ÷ ${numPeople} = -$${share} per person.`
+    explanation: `Debt can be represented as a negative number: -$${totalDebt}. Dividing the debt among ${numPeople} people: -${totalDebt} ÷ ${numPeople} = -$${share}. Therefore, each person owes $${share}.`
   });
 
   // 51. Scale Drawing Area
@@ -1323,12 +1364,53 @@ export const generateQuestions = (): Question[] => {
   });
   }
 
+  // Return all questions
+  const extraQs = [
+    generateProportionalTable(),
+    generateProportionalGraph(),
+    generateComplexUnitRate(),
+    generateMultiStepPercent(),
+    generateScaleDrawing(),
+    generateVerbalExpression(),
+    generateMultiStepEquation(),
+    generateInequalityGraph(),
+    generateAngleParallelLines(),
+    generateIQR(),
+    generateCompositeArea(),
+    generateFrequencyTableProb(),
+    generateIdentifyFunction(),
+    generateScientificNotation(),
+    generatePythagoreanTheorem(),
+    generateExponentRules(),
+    generateVolumeCylinder(),
+    generateSlopeFromPoints(),
+    generateRationalIrrational(),
+    generateVolumeCone(),
+    generateVolumeSphere(),
+    generateDilation(),
+    generateScatterPlotTrend(),
+    generatePythagoreanDistance(),
+    generateScientificNotationConversion(),
+    generateFunctionNotation(),
+    generateSystemByGraphing(),
+    generateHybridPay(),
+    generateRateConversion(),
+    generateVolumePyramid(),
+    generateSystemSubstitution(),
+    generateTransformations(),
+    generateTwoWayTable(),
+    generateScientificNotationOperations(),
+    generateComparingFunctions(),
+    generateSystemWordProblem()
+  ].map((q, i) => ({ ...q, id: 81 + i }));
+
+  const allQs = [...qs, ...extraQs];
+
   // Shuffle the array
-  for (let i = qs.length - 1; i > 0; i--) {
+  for (let i = allQs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [qs[i], qs[j]] = [qs[j], qs[i]];
+    [allQs[i], allQs[j]] = [allQs[j], allQs[i]];
   }
 
-  // Return all 80 questions
-  return qs;
+  return allQs;
 };
